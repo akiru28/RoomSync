@@ -1,0 +1,7 @@
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!(await Auth.requireAuth())) return; const upcoming = document.getElementById('upcoming-list'), activities = document.getElementById('activities-tbody');
+  try { const [rooms, reservations] = await Promise.all([Api.get('/rooms'), Api.get('/reservations')]); const mine = Auth.isAdmin() ? reservations : reservations.filter(r => r.userId === Auth.getCurrentUser().id); upcoming.innerHTML = mine.length ? mine.slice(0, 5).map(r => `<li><strong>${r.roomName}</strong> — ${formatDateLocal(r.startDate)} <span class="badge ${r.status}">${r.status}</span></li>`).join('') : '<li class="muted">No upcoming reservations.</li>';
+    const summary = document.querySelector('.card:nth-child(2) .summary-list'); if (summary) summary.innerHTML = `<li>Available rooms <strong>${rooms.length}</strong></li><li>My requests <strong>${mine.length}</strong></li><li>Pending <strong>${mine.filter(r => r.status === 'pending').length}</strong></li>`;
+    if (activities) activities.innerHTML = mine.length ? mine.slice(0, 6).map(r => `<tr><td>${r.userName}</td><td>${r.purpose}</td><td>${formatDateLocal(r.createdAt)}</td><td><span class="badge ${r.status}">${r.status}</span></td></tr>`).join('') : '<tr><td colspan="4">No activity found.</td></tr>';
+  } catch (err) { upcoming.innerHTML = `<li class="muted">Unable to load dashboard: ${err.message}</li>`; }
+});
