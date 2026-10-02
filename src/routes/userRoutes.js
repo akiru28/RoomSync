@@ -15,7 +15,7 @@ router.get('/me', authenticate, userController.getMe);
 router.patch('/me', authenticate, userController.updateMe);
 
 /**
- * GET /api/users/:id
+ * GET /api/users/:id (self or admin)
  */
 router.get('/:id', authenticate, userController.getById);
 

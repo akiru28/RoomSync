@@ -19,11 +19,11 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS rooms (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     code VARCHAR(50) NOT NULL UNIQUE,
     type ENUM('lecture', 'lab', 'seminar', 'hall') NOT NULL,
-    capacity INT NOT NULL,
+    capacity INT UNSIGNED NOT NULL,
     location VARCHAR(200),
     features JSON,
     description TEXT,
@@ -35,14 +35,30 @@ CREATE TABLE IF NOT EXISTS rooms (
     CONSTRAINT chk_rooms_capacity_positive CHECK (capacity > 0)
 );
 
+CREATE TABLE IF NOT EXISTS equipment (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    room_id INT UNSIGNED NOT NULL,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    status ENUM('operational', 'maintenance', 'retired') NOT NULL DEFAULT 'operational',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_equipment_room_status (room_id, status),
+    CONSTRAINT fk_equipment_room
+        FOREIGN KEY (room_id) REFERENCES rooms(id)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
 CREATE TABLE IF NOT EXISTS reservations (
     id VARCHAR(100) PRIMARY KEY,
-    room_id INT NOT NULL,
+    room_id INT UNSIGNED NOT NULL,
     user_id VARCHAR(100) NOT NULL,
     purpose VARCHAR(255) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    attendees INT NOT NULL DEFAULT 1,
+    attendees INT UNSIGNED NOT NULL DEFAULT 1,
     notes TEXT,
     status ENUM(
         'pending',
@@ -74,6 +90,36 @@ CREATE TABLE IF NOT EXISTS reservations (
         FOREIGN KEY (approved_by)
         REFERENCES users(id)
         ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS laboratory_reports (
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    room_id INT UNSIGNED NOT NULL,
+    equipment_id INT UNSIGNED NULL,
+    reported_by VARCHAR(100) NOT NULL,
+    issue_type VARCHAR(100) NOT NULL,
+    severity ENUM('low', 'medium', 'high', 'critical') NOT NULL DEFAULT 'medium',
+    description TEXT NOT NULL,
+    status ENUM('reported', 'under_review', 'in_progress', 'resolved')
+        NOT NULL DEFAULT 'reported',
+    resolution_notes TEXT,
+    resolved_at DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_laboratory_reports_room_status (room_id, status),
+    KEY idx_laboratory_reports_reporter (reported_by, created_at),
+    KEY idx_laboratory_reports_equipment (equipment_id),
+    KEY idx_laboratory_reports_status (status),
+    CONSTRAINT fk_laboratory_report_room
+        FOREIGN KEY (room_id) REFERENCES rooms(id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_laboratory_report_equipment
+        FOREIGN KEY (equipment_id) REFERENCES equipment(id)
+        ON UPDATE CASCADE ON DELETE SET NULL,
+    CONSTRAINT fk_laboratory_report_reporter
+        FOREIGN KEY (reported_by) REFERENCES users(id)
+        ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS audit_logs (

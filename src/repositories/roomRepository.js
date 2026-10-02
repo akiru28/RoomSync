@@ -82,17 +82,20 @@ async function remove(id) {
   return result.affectedRows > 0;
 }
 
-async function findAvailable(start, end) {
+async function findAvailable(start, end, roomId) {
+  const roomClause = roomId == null ? '' : 'AND r.id = ?';
+  const params = roomId == null ? [end, start] : [end, start, roomId];
   const [rows] = await getConnection().execute(
     `SELECT ${ROOM_COLUMNS} FROM rooms r
      WHERE r.is_active = TRUE
+       ${roomClause}
        AND NOT EXISTS (
          SELECT 1 FROM reservations x
          WHERE x.room_id = r.id AND x.start_date < ? AND x.end_date > ?
            AND x.status NOT IN ('rejected', 'cancelled')
        )
      ORDER BY r.name`,
-    [end, start]
+    params
   );
   return rows.map(mapRoom);
 }

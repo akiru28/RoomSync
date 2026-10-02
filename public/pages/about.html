@@ -28,23 +28,24 @@
       box-shadow: var(--shadow-xs);
     }
     .about-nav-inner {
-      box-sizing: border-box; width: 100%; height: 67px; max-width: 1180px;
-      margin: 0 auto; padding: 10px var(--space-5);
-      display: flex; align-items: center; gap: clamp(16px, 3vw, 36px);
+      box-sizing: border-box; width: 100%; height: 67px;
+      margin: 0; padding: 10px var(--space-5);
+      display: flex; align-items: center; justify-content: space-between;
     }
     .about-nav .brand { flex-shrink: 0; }
     .about-brand-logo { display: block; width: 42px; height: 42px; object-fit: contain; }
-    .about-nav-links { display: flex; align-items: center; gap: 4px; }
+    .about-nav-links { display: flex; align-items: center; gap: 4px; margin-left: auto; }
     .about-nav-links a {
       padding: 9px 14px; border-radius: 8px; color: var(--text-2);
       font-size: var(--fs-sm); text-decoration: none; transition: background .18s var(--ease);
     }
     .about-nav-links a:hover { background: var(--surface-2); color: var(--text); }
     .about-menu-toggle {
-      display: none; margin-left: auto; padding: 6px 10px;
+      display: none; margin-left: auto; padding: 8px;
       color: var(--text); background: transparent; border: 1px solid var(--border);
-      border-radius: 8px; font-size: 1.2rem; line-height: 1; cursor: pointer;
+      border-radius: 8px; line-height: 1; cursor: pointer;
     }
+    .about-menu-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 
     .about-page { max-width: 1180px; margin: 0 auto; padding: 36px var(--space-5) 64px; }
     .landing-section { scroll-margin-top: 76px; padding: 32px 0; }
@@ -133,7 +134,7 @@
       .about-nav-links {
         display: none; flex-basis: 100%; flex-direction: column; align-items: stretch;
         padding: 8px; border: 1px solid var(--border); border-radius: var(--radius);
-        background: var(--surface); box-shadow: var(--shadow-lg);
+        background: var(--surface); box-shadow: var(--shadow-lg); margin-left: 0;
       }
       .about-nav-links.open { display: flex; }
       .about-nav-links a { padding: 12px 14px; }
@@ -153,11 +154,11 @@
         <img class="about-brand-logo" src="../assets/logos/logo.png" alt="">
         <span class="brand-text">RoomSync</span>
       </a>
-      <button class="about-menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="about-nav-links">☰</button>
+      <button class="about-menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="about-nav-links">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
       <nav class="about-nav-links" id="about-nav-links" aria-label="About RoomSync navigation">
         <a href="index.html">Home</a>
-        <a href="#about">About RoomSync</a>
-        <a href="#features">Key Features</a>
         <a href="login.html">Sign In</a>
       </nav>
     </div>

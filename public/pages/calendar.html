@@ -45,7 +45,7 @@
     <!-- header injected -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-user" data-user-only hidden>
-        <div class="sidebar-user-avatar" aria-hidden="true">👤</div>
+        <div class="sidebar-user-avatar" aria-hidden="true"></div>
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" data-user-name>User</div>
           <span class="badge info small sidebar-role-pill" data-role-label></span>
@@ -59,6 +59,7 @@
           <li data-user-only><a href="calendar.html">Calendar</a></li>
           <li data-can-reserve hidden><a href="reservation.html">New Reservation</a></li>
           <li data-can-reserve hidden><a href="my-reservations.html">My Reservations</a></li>
+          <li data-report-access hidden><a href="reports.html">Lab Reports</a></li>
           <li data-admin-only hidden><a href="admin.html">Admin</a></li>
         </ul>
         <ul>
@@ -72,7 +73,7 @@
         <div class="page-title-block">
           <span class="eyebrow">Schedule · Room Timeline</span>
           <h1>Reservations Calendar</h1>
-          <p class="lead">See who has booked each space, spot conflicts at a glance, and jump directly to requesting time.</p>
+          <p class="lead">Review approved reservations across available rooms and laboratories.</p>
         </div>
         <div class="page-actions">
           <button class="btn ghost" id="refresh-btn">Refresh</button>
@@ -83,8 +84,6 @@
         <span class="section-label">Legend</span>
         <ul class="legend" style="margin-bottom:var(--space-4)">
           <li><span class="sw approved"></span>Approved</li>
-          <li><span class="sw pending"></span>Pending Review</li>
-          <li><span class="sw rejected"></span>Rejected / Cancelled</li>
         </ul>
         <div id="calendar" class="calendar-placeholder">
           <p class="muted">Loading calendar…</p>

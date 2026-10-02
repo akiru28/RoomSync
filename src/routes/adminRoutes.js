@@ -7,6 +7,7 @@ const reservationRepo = require('../repositories/reservationRepository');
 const userRepo = require('../repositories/userRepository');
 const roomRepo = require('../repositories/roomRepository');
 const reportController = require('../controllers/reportController');
+const equipmentController = require('../controllers/equipmentController');
 const { success, error } = require('../utils/response');
 
 const router = express.Router();
@@ -39,6 +40,11 @@ router.get('/rooms', async (req, res, next) => {
     return next(err);
   }
 });
+
+router.get('/equipment', equipmentController.list);
+router.post('/equipment', equipmentController.create);
+router.patch('/equipment/:id', equipmentController.update);
+router.delete('/equipment/:id', equipmentController.retire);
 
 /**
  * GET /api/admin/reservations

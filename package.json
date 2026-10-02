@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "test": "node --test"
   },
   "keywords": [
     "node",
@@ -25,6 +26,7 @@
     "express-session": "^1.19.0",
     "express-validator": "^7.3.2",
     "helmet": "^8.3.0",
+    "lucide": "^1.49.0",
     "morgan": "^1.12.1",
     "mysql2": "^3.24.4"
   },

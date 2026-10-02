@@ -31,8 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td><strong>${escapeHtml(reservation.roomName)}</strong><br><small>${escapeHtml(reservation.purpose)}</small></td>
         <td>${escapeHtml(formatDateLocal(reservation.startDate))} – ${escapeHtml(formatTime(reservation.endDate))}<br>
           <small>${escapeHtml(reservation.attendees)} attendees · requested ${escapeHtml(formatDateShort(reservation.createdAt))}</small></td>
-        <td><div class="admin-room-actions">${actions}${editable}
-          <button class="btn danger small" data-delete-reservation="${escapeHtml(reservation.id)}">Delete</button></div></td>
+        <td><div class="admin-room-actions">${actions}${editable}</div></td>
       </tr>`;
     }).join('') : '<tr><td colspan="4">No reservation requests found.</td></tr>';
   }
@@ -370,17 +369,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.showToast('error', 'Update failed', error.message);
       }
       return;
-    }
-    const deleteButton = event.target.closest('[data-delete-reservation]');
-    if (!deleteButton || !window.confirm('Delete this reservation permanently?')) return;
-    deleteButton.disabled = true;
-    try {
-      await Api.delete(`/reservations/${encodeURIComponent(deleteButton.dataset.deleteReservation)}`);
-      window.showToast('success', 'Reservation deleted', 'The reservation was removed.');
-      await load();
-    } catch (error) {
-      deleteButton.disabled = false;
-      window.showToast('error', 'Unable to delete reservation', error.message);
     }
   });
 

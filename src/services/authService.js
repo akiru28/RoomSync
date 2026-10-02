@@ -4,6 +4,7 @@ const { registerSchema, loginSchema } = require('../validators/authValidator');
 const { generateToken } = require('../utils/generateId');
 const { sanitize } = require('../models/User');
 const { ROLES, SESSION_COOKIE } = require('../constants/roles');
+const env = require('../config/environment');
 
 const COOKIE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
 
@@ -42,15 +43,17 @@ async function register(payload) {
     throw err;
   }
 
-  const token = generateToken();
   const user = await userRepo.create({
     name: value.name,
     email: value.email,
     password: await bcrypt.hash(value.password, 12),
     role: ROLES.STUDENT,
     department: value.department,
-    token,
+    token: null,
   });
+  const token = generateToken(env.jwt.secret, env.jwt.expiresIn);
+  await userRepo.updateToken(user.id, token);
+  user.token = token;
 
   return { user: sanitize(user), token };
 }
@@ -85,7 +88,7 @@ async function login(email, password) {
     await userRepo.update(user.id, { password: user.password });
   }
 
-  const token = generateToken();
+  const token = generateToken(env.jwt.secret, env.jwt.expiresIn);
   await userRepo.updateToken(user.id, token);
   user.token = token;
   return { user: sanitize(user), token };

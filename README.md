@@ -43,8 +43,10 @@ clean 3-tier backend architecture (Routes → Controllers/Services → Repositor
 ### Core
 - **Room &amp; Lab Directory** — browse by type (lecture / lab / seminar / hall), capacity, location, and equipment.
 - **Real-Time Availability** — per-room availability endpoint with conflict detection before submission.
-- **Reservation Management** — create, edit, cancel, and delete requests.
-- **Calendar View** — full calendar with color-coded statuses (pending / approved / rejected / cancelled / completed).
+- **Reservation Management** — faculty requests, admin review, and status-based cancellation/history.
+- **Calendar View** — approved room schedule visible to authenticated roles.
+- **Laboratory Reports** — Lab Tech issue submission and history, with Admin status/resolution management.
+- **Equipment Inventory** — Admin-managed equipment records linked to laboratories.
 - **Approval Workflow** — status transitions with state-machine guards.
 - **Admin Reports &amp; CSV Export** — utilization, by-status counts, user activity, and CSV export.
 - **User Management** — admin can list and remove users.
@@ -60,7 +62,7 @@ clean 3-tier backend architecture (Routes → Controllers/Services → Repositor
 ### Security
 - **Bearer Token Authentication** (token-based session, invalidated on logout).
 - **Role-Based Access Control (RBAC)** via middleware + service-level guards.
-- **Data-Level Scoping** — students only ever see their own reservations (enforced server-side, not just in UI).
+- **Data-Level Scoping** — faculty can view their own requests; Admin can review all requests. Other roles use the approved-only shared schedule.
 - **Model Field Sanitization** — `password` and `token` are stripped from user payloads before response.
 
 ---
@@ -74,16 +76,17 @@ both the route middleware and the reservation service layer.
 |---|---|---|---|---|
 | Self-register an account | ✅ | — | — | — |
 | Browse rooms &amp; availability | ✅ | ✅ | ✅ | ✅ |
-| Submit a reservation | ✅ → **pending** | ✅ → **auto-approved** | ✅ → **auto-approved** | ✅ → **auto-approved** |
-| View own reservations only | ✅ (server-forced) | — | — | — |
-| View *all* reservations | — | ✅ | ✅ | ✅ |
-| Approve / Reject / Mark Completed | — | ✅ | ✅ | ✅ |
-| Cancel *own* reservation | ✅ | ✅ | ✅ | ✅ |
-| Cancel *any* reservation | — | ✅ | ✅ | ✅ |
-| Hard-delete *any* reservation | — | — | ✅ | ✅ |
+| Submit a reservation | — | ✅ → **pending** | — | Create on behalf of faculty → **pending** |
+| View own reservations | — | ✅ | — | ✅ |
+| View approved schedule | ✅ | ✅ | ✅ | ✅ |
+| Approve / Reject / Mark Completed | — | — | — | ✅ |
+| Cancel eligible own reservation | — | ✅ | — | Admin manages status |
+| Submit / view own lab reports | — | — | ✅ | View all |
+| Manage report status / resolution | — | — | — | ✅ |
+| Manage equipment inventory | — | — | — | ✅ |
 | Create / Edit / Delete rooms | — | — | — | ✅ |
 | List users / Delete users | — | — | — | ✅ |
-| Run reports + CSV export | — | — | — | ✅ |
+| Run reservation reports + CSV export | — | — | — | ✅ |
 | Access Admin page (`admin.html`) | — | — | — | ✅ |
 
 > **Note:** The registration form UI always assigns `role: 'student'`. Faculty / Lab Tech / Admin
@@ -101,11 +104,11 @@ Service-layer rules: [src/services/reservationService.js](file:///C:/xampp/htdoc
 |---|---|
 | **Runtime** | Node.js (≥18) |
 | **Web framework** | Express 4.21 |
-| **Data layer** | In-memory repository adapters (repository pattern — swap for real DB via [src/config/database.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/config/database.js)) |
+| **Data layer** | MySQL/MariaDB via `mysql2`, using repository pattern |
 | **Validation** | Lightweight custom validators ([src/validators/](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/validators/)) |
 | **Frontend** | Vanilla HTML / CSS / JavaScript — no build step |
 | **CSS** | Custom design system with CSS Custom Properties, Light + Dark themes |
-| **Session tokens** | Cryptographically random tokens (see [src/utils/generateId.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/utils/generateId.js)), stored client-side in `localStorage` |
+| **Session tokens** | HS256-signed JWTs, verified server-side and revocable through the stored user token |
 
 ---
 
@@ -249,6 +252,8 @@ cp .env.example .env
 # Start MySQL/MariaDB and set DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME in .env.
 # On a fresh database, import sql/roomsync_database.sql to create and seed the schema.
 # WARNING: that SQL script drops existing tables before recreating them.
+# For an existing compatible schema, review and apply sql/add_laboratory_reporting.sql
+# to add the equipment and laboratory-report tables without dropping existing data.
 
 # 3. Start the development server with auto-reload
 npm run dev
@@ -324,7 +329,7 @@ Source: [src/routes/authRoutes.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20V
 |---|---|---|---|
 | `GET` | `/me` | ✅ | Current user's own profile. |
 | `PATCH` | `/me` | ✅ | Update current user's profile. |
-| `GET` | `/:id` | ✅ | Fetch any user by id. |
+| `GET` | `/:id` | ✅ | Fetch own profile or any profile as Admin. |
 
 Source: [src/routes/userRoutes.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/routes/userRoutes.js)
 
@@ -335,9 +340,23 @@ Source: [src/routes/userRoutes.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20V
 | `GET` | `/` | — | Public | List all active rooms. |
 | `GET` | `/:id` | — | Public | Single room details. |
 | `GET` | `/:id/availability` | — | Public | Free/busy time ranges for a room. |
+| `GET` | `/:id/equipment` | ✅ | Authenticated | Equipment assigned to a room. |
 | `POST` | `/` | ✅ | Admin | Create a room. |
 | `PATCH` | `/:id` | ✅ | Admin | Update a room. |
 | `DELETE` | `/:id` | ✅ | Admin | Delete / deactivate a room. |
+
+### Schedule and laboratory reports
+
+| Method | Endpoint | Auth | Role | Description |
+|---|---|---|---|---|
+| `GET` | `/api/reservations/schedule` | ✅ | Any authenticated role | Approved room schedule only; does not disclose requester or purpose. |
+| `POST` | `/api/reports` | ✅ | Lab Tech | Submit a laboratory issue report. |
+| `GET` | `/api/reports` | ✅ | Lab Tech / Admin | Lab Tech sees own reports; Admin sees all reports. |
+| `GET` | `/api/reports/:id` | ✅ | Lab Tech / Admin | Read own report or any report as Admin. |
+| `PATCH` | `/api/reports/:id` | ✅ | Admin | Update report status and resolution notes. |
+| `GET` | `/api/admin/equipment` | ✅ | Admin | List equipment, including retired records. |
+| `POST` | `/api/admin/equipment` | ✅ | Admin | Add equipment to a laboratory. |
+| `PATCH` | `/api/admin/equipment/:id` | ✅ | Admin | Update or retire equipment. |
 
 Source: [src/routes/roomRoutes.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/routes/roomRoutes.js) · [src/controllers/roomController.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/controllers/roomController.js)
 
@@ -345,12 +364,11 @@ Source: [src/routes/roomRoutes.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20V
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/` | ✅ | List reservations. **Students are server-forced to only `userId={own}`**. Query params: `roomId`, `userId`, `status`, `start`, `end`, `page`, `perPage`. |
-| `POST` | `/` | ✅ | Create reservation. Body: `{ roomId, purpose, startDate, endDate, attendees, notes? }`. Students get `pending`, others auto-`approved`. |
-| `GET` | `/:id` | ✅ | Fetch a single reservation. |
-| `PATCH` | `/:id` | ✅ | Update mutable fields. |
-| `DELETE` | `/:id` | ✅ | Delete (owner, lab_tech, or admin only). |
-| `PATCH` | `/:id/status` | ✅ | Transition status. Body: `{ status }`. Privileged users only (not students). Owner OR staff may cancel. |
+| `GET` | `/` | ✅ | Faculty see their own requests; Admin sees all requests. Query params: `roomId`, `userId`, `status`, `start`, `end`, `page`, `perPage`. |
+| `POST` | `/` | ✅ | Faculty creates a pending request. Body: `{ roomId, purpose, startDate, endDate, attendees, notes? }`. |
+| `GET` | `/schedule` | ✅ | Any authenticated role can read approved schedule entries only. |
+| `GET` | `/:id` | ✅ | Faculty may fetch their own reservation; Admin may fetch any reservation. |
+| `PATCH` | `/:id/status` | ✅ | Body: `{ status }`. Admin manages statuses; an owner may cancel their own eligible request. |
 
 Source: [src/routes/reservationRoutes.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/routes/reservationRoutes.js) · [src/controllers/reservationController.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/controllers/reservationController.js) · [src/services/reservationService.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/services/reservationService.js)
 
@@ -408,26 +426,29 @@ Paginated endpoints add a `meta` object:
                               │
         ┌─────────────────────┴──────────────────────┐
         │                                            │
-   Admin / Faculty /                        Student submits
-   Lab Tech submits                              (→ pending)
-   (→ approved automatically)                      │
-        │                                          │
-        ▼                                          ▼
- ┌──────────────┐                           ┌──────────────┐
- │   APPROVED   │◄── Approve ───────────────│   PENDING    │
- └──────┬───────┘                           └──────┬───────┘
-        │                                          │
-        │  Cancel          Owner or staff can also │  Reject
-        ▼               cancel a pending record    ▼
- ┌──────────────┐                           ┌──────────────┐
- │  CANCELLED   │                           │   REJECTED   │  (terminal)
- └──────────────┘                           └──────────────┘
-        │
-        │  (from APPROVED only)
-        ▼
- ┌──────────────┐
- │  COMPLETED   │  (terminal)
- └──────────────┘
+                       │      Faculty request      │
+                       └─────────────┬─────────────┘
+                                     ▼
+                              ┌──────────────┐
+                              │   PENDING    │
+                              └──────┬───────┘
+                       Admin approve│      │Admin reject
+                                    ▼      ▼
+                         ┌──────────────┐ ┌──────────────┐
+                         │   APPROVED   │ │   REJECTED   │ (terminal)
+                         └──────┬───────┘ └──────────────┘
+                                │
+                   Admin or owner cancels
+                                ▼
+                         ┌──────────────┐
+                         │  CANCELLED   │ (terminal)
+                         └──────────────┘
+                                │
+                      Admin marks completed
+                                ▼
+                         ┌──────────────┐
+                         │  COMPLETED   │ (terminal)
+                         └──────────────┘
 ```
 
 Transition rules are enforced in
@@ -484,7 +505,7 @@ Copy `.env.example` → `.env` and adjust as needed.
 |---|---|---|
 | `NODE_ENV` | `development` | `development` / `staging` / `production` |
 | `PORT` | `3000` | HTTP server port |
-| `JWT_SECRET` | `dev-secret-change-me` | **Required in production.** Used for token signing (currently tokens are random, this is reserved for future JWT switch). |
+| `JWT_SECRET` | development-only placeholder | **Required in production (at least 32 characters).** Signs HS256 access tokens. |
 | `JWT_EXPIRES_IN` | `7d` | Token lifetime. |
 | `CORS_ORIGIN` | `*` | Allowed origin for CORS. |
 | `DB_HOST` | `localhost` | MySQL/MariaDB host. |
@@ -511,7 +532,7 @@ Loaded in [src/config/environment.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%
 |---|---|
 | `npm start` | Run in production mode. |
 | `npm run dev` | Run with Node's built-in `--watch` for auto-reload on code changes. |
-| `npm test` | *(placeholder)* Run unit/integration/e2e suites. |
+| `npm test` | Run the Node.js unit tests. |
 | `npm run migrate` | *(placeholder)* Run DB migrations (once a real DB is connected). |
 | `npm run seed` | Seed the database with initial application data. |
 | `npm run lint` | *(placeholder)* Lint sources with a chosen linter. |
@@ -520,42 +541,19 @@ Loaded in [src/config/environment.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%
 
 ## Known Gaps &amp; Roadmap
 
-Items marked below are deliberate placeholders in the current codebase that should be
-addressed before any production release.
+The current implementation includes signed access tokens with a production secret
+requirement, owner/Admin profile access checks, role-guarded reservation operations,
+and status-based cancellation instead of reservation hard deletion. Production
+deployment still requires a strong, unique `JWT_SECRET`; development bypass is
+available only when `NODE_ENV` is not production.
 
-### 🔴 Security — Must Fix
-
-1. **Registration role-escalation** — `/api/auth/register` is unauthenticated and
-   honors any `role` value sent in the body. See [authService.js L32](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/services/authService.js#L32).
-   **Fix:** Force `ROLES.STUDENT` for self-registration; add an admin-only
-   `POST /api/admin/users` endpoint for elevated account creation.
-
-2. **`GET /api/users/:id` no owner-check** — any authenticated user can read any
-   other user's profile. **Fix:** Allow only `req.user.id === id` or
-   `role === ADMIN`.
-
-3. **`PATCH /api/reservations/:id` bypasses RBAC** — the raw update hits
-   `reservationRepo.update` with no ownership or privilege check, allowing any
-   user to modify fields like `status` or `userId` on other records. **Fix:**
-   mirror the checks used in `remove()` / `updateStatus()` and whitelist mutable
-   fields based on role.
-
-4. **Legacy seed passwords may be plain text** — new and changed passwords are
-   bcrypt-hashed; a legacy password is upgraded after a successful login.
-
-5. **Dev-bypass token is a hardcoded string** — `dev-bypass-admin-token` in
-   [authMiddleware.js](file:///C:/xampp/htdocs/Void/RoomSync%20-%20Void%20Syndicate/src/middleware/authMiddleware.js#L5) makes every request an Admin in `NODE_ENV=development`.
-   Confirm this is never reachable in production.
-
-### 🟡 Product — Next Features
-
-- Wire a real database (MySQL / Postgres / SQLite) via the existing repository pattern.
-- Implement migrations and proper seeds (stub directories exist under `database/`).
-- Complete the notification service — `notificationService` currently has hooks but
-  no SMTP delivery; SMTP env vars are already defined.
-- Add password reset flow + email verification.
-- Paginate `GET /api/rooms`, `GET /api/admin/users`.
-- Lab Tech display label and a dedicated `Auth.isLabTech()` helper on the frontend.
+Remaining work includes applying and verifying the reporting migration against the
+target database before deployment, broader API/database integration tests, a
+durable audit/activity log, and optional email verification/password reset. The
+existing test suite is focused unit coverage, not a complete production-readiness
+suite. Do not import `sql/roomsync_database.sql` over an existing database: it drops
+and recreates tables. Use the additive migration only after confirming its foreign
+key column types match the target schema.
 
 ### 🟢 Nice-to-Have
 

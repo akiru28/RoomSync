@@ -2,11 +2,23 @@
 (function () {
   'use strict';
   const TOKEN = 'rr_token', USER = 'rr_user';
+  const THEME = 'rr_theme';
   const CAN_RESERVE = ['instructor'];
   const CAN_APPROVE = ['admin'];
+  const savedTheme = localStorage.getItem(THEME);
+  if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
   let currentUser = null, readyPromise = Promise.resolve(null);
   const qs = (s, c) => (c || document).querySelector(s);
   const qa = (s, c) => Array.from((c || document).querySelectorAll(s));
+  const syncThemeToggle = () => {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    const label = `Switch to ${dark ? 'light' : 'dark'} mode`;
+    qa('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-label', label);
+      button.title = label;
+    });
+  };
+  syncThemeToggle();
   window.qs = qs; window.qa = qa;
   window.formatDateLocal = (v) => v ? new Date(v).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
   window.formatDateShort = (v) => v ? new Date(v).toLocaleDateString(undefined, { dateStyle: 'medium' }) : '—';
@@ -49,6 +61,7 @@
       const admin = Auth.isAdmin();
       const student = Auth.isStudent();
       const labTech = Auth.isLabTech();
+      const reportAccess = labTech || admin;
       const canReserve = Auth.canReserve();
 
       qa('[data-admin-only]').forEach((el) => { hide(el, !admin); });
@@ -71,12 +84,7 @@
         const li = el.closest && el.closest('li');
         if (li) hide(li, !canReserve);
       });
-      // Lab Tech is view/report-only and must not access the reservation calendar.
-      qa('a[href="calendar.html"]').forEach((el) => {
-        hide(el, labTech);
-        const li = el.closest && el.closest('li');
-        if (li) hide(li, labTech);
-      });
+      qa('[data-report-access]').forEach((el) => hide(el, !reportAccess));
       qa('[data-no-student]').forEach((el) => {
         hide(el, student);
         const li = el.closest && el.closest('li');
@@ -99,7 +107,15 @@
   };
   window.Auth = Auth; readyPromise = Auth.initialize();
   document.addEventListener('roomsync:components-ready', Auth.renderNavigation);
+  document.addEventListener('roomsync:components-ready', syncThemeToggle);
   document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('[data-theme-toggle]')) return;
+      const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem(THEME, theme);
+      syncThemeToggle();
+    });
     const year = qs('#footer-year'); if (year) year.textContent = new Date().getFullYear();
     qs('#refresh-btn')?.addEventListener('click', () => location.reload());
 

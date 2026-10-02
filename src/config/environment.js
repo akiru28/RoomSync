@@ -20,10 +20,10 @@ if (fs.existsSync(envPath)) {
 const nodeEnv = process.env.NODE_ENV || 'development';
 const port = parseInt(process.env.PORT || '3000', 10);
 
-const requiredVars = ['JWT_SECRET'];
-const missing = requiredVars.filter((v) => !process.env[v]);
-if (missing.length > 0 && nodeEnv !== 'development') {
-  console.warn(`[environment] Missing required env vars: ${missing.join(', ')}`);
+const isProduction = nodeEnv === 'production';
+const jwtSecret = process.env.JWT_SECRET || (isProduction ? '' : 'dev-only-change-me');
+if (isProduction && (jwtSecret.length < 32 || jwtSecret === 'dev-only-change-me')) {
+  throw new Error('[environment] Production requires a JWT_SECRET of at least 32 characters.');
 }
 
 const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '7d';
@@ -33,7 +33,7 @@ const config = {
   port,
   corsOrigin: process.env.CORS_ORIGIN || '*',
   jwt: {
-    secret: process.env.JWT_SECRET || 'dev-secret-change-me',
+    secret: jwtSecret,
     expiresIn: jwtExpiresIn,
   },
   db: {

@@ -234,6 +234,7 @@
   max-width: none;
   margin: 0;
   padding: 14px var(--space-5);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -260,9 +261,10 @@
     .landing-nav-links a.btn { padding: 8px 14px; }
     .landing-toggle {
       display: none; background: transparent; border: 1px solid var(--border);
-      font-size: 1.2rem; padding: 6px 10px; border-radius: 8px; color: var(--text); cursor: pointer;
+      padding: 8px; border-radius: 8px; color: var(--text); cursor: pointer;
       line-height: 1;
     }
+    .landing-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
     .landing-toggle:hover { background: var(--surface-2); }
     .landing-toggle:focus-visible { outline: none; box-shadow: var(--nav-focus); }
 
@@ -736,7 +738,6 @@
 
     /* --- Narrow Desktop / Large Laptop (1280px and below) --- */
     @media (max-width: 1280px) {
-      .landing-nav-inner,
       .landing-hero,
       .landing-section,
       .cta-band,
@@ -1025,7 +1026,9 @@
           <img class="landing-brand-logo" src="../assets/logos/logo.png" alt="">
           <div class="brand-text">RoomSync</div>
         </a>
-        <button type="button" class="landing-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="landing-nav-menu">☰</button>
+        <button type="button" class="landing-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="landing-nav-menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
         <div class="landing-nav-links" id="landing-nav-menu" role="navigation">
           <a href="about.html#about">About RoomSync</a>
           <a href="about.html#features">Key Features</a>

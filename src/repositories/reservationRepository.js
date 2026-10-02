@@ -57,6 +57,24 @@ async function findByDateRange(start, end) {
   return rows;
 }
 
+async function findSchedule(filters = {}) {
+  const clauses = ["r.status = 'approved'"];
+  const params = [];
+  if (filters.roomId != null) { clauses.push('r.room_id = ?'); params.push(filters.roomId); }
+  if (filters.start) { clauses.push('r.end_date >= ?'); params.push(filters.start); }
+  if (filters.end) { clauses.push('r.start_date <= ?'); params.push(filters.end); }
+  const [rows] = await getConnection().execute(
+    `SELECT rooms.name AS roomName, r.start_date AS startDate, r.end_date AS endDate,
+            r.status
+     FROM reservations r
+     JOIN rooms ON rooms.id = r.room_id
+     WHERE ${clauses.join(' AND ')}
+     ORDER BY r.start_date`,
+    params
+  );
+  return rows;
+}
+
 async function create(data) {
   const id = data.id || generateId('res');
   await getConnection().execute(
@@ -106,4 +124,4 @@ async function count(filter) {
   return rows.length;
 }
 
-module.exports = { findAll, findById, findByRoomAndRange, findByDateRange, create, update, remove, updateStatus, count };
+module.exports = { findAll, findById, findByRoomAndRange, findByDateRange, findSchedule, create, update, remove, updateStatus, count };

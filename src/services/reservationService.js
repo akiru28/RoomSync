@@ -52,7 +52,7 @@ async function create(payload, actor) {
     err.status = 404;
     throw err;
   }
-  if (room.isActive === false) {
+  if (room.isActive === false || room.isActive === 0) {
     const err = new Error('Room is not available for reservation.');
     err.status = 400;
     throw err;
@@ -184,6 +184,15 @@ async function list(filters, actor) {
   return [];
 }
 
+async function schedule(filters) {
+  const f = filters || {};
+  return reservationRepo.findSchedule({
+    roomId: f.roomId != null ? (Number(f.roomId) || f.roomId) : undefined,
+    start: f.start || undefined,
+    end: f.end || undefined,
+  });
+}
+
 /**
  * Get a single reservation only for its Instructor owner or Admin.
  */
@@ -205,29 +214,6 @@ async function get(id, actor) {
   }
 
   return reservation;
-}
-
-/**
- * Remove a reservation.
- * @param {string} id
- * @param {object} actor
- * @returns {Promise<boolean>}
- */
-async function remove(id, actor) {
-  const reservation = await reservationRepo.findById(id);
-  if (!reservation) {
-    const err = new Error('Reservation not found.');
-    err.status = 404;
-    throw err;
-  }
-  const isOwner = actor && String(reservation.userId) === String(actor.id);
-  const isAdmin = actor && actor.role === ROLES.ADMIN;
-  if (!isOwner && !isAdmin) {
-    const err = new Error('Forbidden.');
-    err.status = 403;
-    throw err;
-  }
-  return reservationRepo.remove(id);
 }
 
 function requireAdmin(actor) {
@@ -263,7 +249,7 @@ async function validateAdminReservation(payload, excludeId) {
     err.status = 404;
     throw err;
   }
-  if (room.isActive === false) {
+  if (room.isActive === false || room.isActive === 0) {
     const err = new Error('Room is not available for reservation.');
     err.status = 400;
     throw err;
@@ -351,4 +337,4 @@ async function updateForAdmin(id, payload, actor) {
   return updated;
 }
 
-module.exports = { create, updateStatus, list, get, remove, createForAdmin, updateForAdmin };
+module.exports = { create, updateStatus, list, schedule, get, createForAdmin, updateForAdmin };

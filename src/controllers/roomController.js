@@ -183,7 +183,18 @@ async function remove(req, res, next) {
 async function availability(req, res, next) {
   try {
     const { start, end } = req.query || {};
-    const rooms = await roomRepo.findAvailable(start || new Date(), end || new Date(Date.now() + 7 * 86400 * 1000));
+    const room = await roomRepo.findById(req.params.id);
+    if (!room) return error(res, 'Room not found.', 404);
+    const startDate = start == null ? new Date() : new Date(start);
+    const endDate = end == null ? new Date(Date.now() + 7 * 86400 * 1000) : new Date(end);
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime()) || startDate >= endDate) {
+      return error(res, 'A valid start and end time range is required.', 400);
+    }
+    const rooms = await roomRepo.findAvailable(
+      startDate,
+      endDate,
+      req.params.id
+    );
     return success(res, rooms, 'OK');
   } catch (err) {
     return next(err);

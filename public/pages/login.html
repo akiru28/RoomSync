@@ -584,9 +584,10 @@
       position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
       width: 32px; height: 32px; border-radius: 8px;
       border: none; background: transparent; color: #64748B; cursor: pointer;
-      font-size: .92rem; display: inline-flex; align-items: center; justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center;
       transition: background .15s var(--ease), color .15s var(--ease);
     }
+    .form .input-wrap .toggle-pass svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     [data-theme="dark"] .form .input-wrap .toggle-pass { color: var(--muted); }
     .form .input-wrap .toggle-pass:hover {
       background: rgba(18,53,91,0.06); color: #0F172A;
@@ -821,7 +822,6 @@
     .footer-brand {
       display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
     }
-    .footer-brand .logo-mark { width: 34px; height: 34px; border-radius: 8px; font-size: .8rem; }
     .footer-brand .brand-text { font-size: 1rem; color: #F8FAFC; font-weight: 800; }
     [data-theme="dark"] .footer-brand .brand-text { color: var(--text); }
     .footer-bottom {
@@ -1043,7 +1043,7 @@
               </div>
               <div class="auth-brand-text">
                 <strong>Camarines Sur Polytechnic Colleges</strong>
-                <span>College of Computer Studies · Official Portal</span>
+                <span>College of Computer Studies</span>
               </div>
             </div>
 
@@ -1070,7 +1070,10 @@
                          required placeholder="••••••••" autocomplete="current-password"
                          minlength="4" class="has-suffix">
                   <button type="button" class="toggle-pass" id="toggle-pass"
-                          aria-label="Show password" aria-pressed="false" title="Show password">👁</button>
+                          aria-label="Show password" aria-pressed="false" title="Show password">
+                    <svg class="password-eye-show" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="password-eye-hide" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a16 16 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1 0 1.9-.2 2.8-.5"/></svg>
+                  </button>
                 </div>
               </div>
 
@@ -1085,17 +1088,9 @@
               <div class="form-actions">
                 <button type="submit" class="btn primary large" style="flex:1;justify-content:center;gap:8px">
                   <span>Sign In</span>
-                  <span aria-hidden="true">→</span>
                 </button>
               </div>
             </form>
-
-            <div class="role-preview" aria-hidden="true">
-              <span class="role-chip">Student</span>
-              <span class="role-chip">Faculty</span>
-              <span class="role-chip">Lab Tech</span>
-              <span class="role-chip">Admin</span>
-            </div>
 
             <div class="login-alt">
               <p>Don't have an account? <a href="index.html#signin">Learn about access</a></p>
@@ -1182,12 +1177,13 @@
       const togglePassBtn = document.getElementById('toggle-pass');
       const passInput = document.getElementById('login-password');
       if (togglePassBtn && passInput) {
-        const EYE_SHOW = '👁';
-        const EYE_HIDE = '🙈';
+        const eyeShow = togglePassBtn.querySelector('.password-eye-show');
+        const eyeHide = togglePassBtn.querySelector('.password-eye-hide');
         togglePassBtn.addEventListener('click', () => {
           const isHidden = passInput.type === 'password';
           passInput.type = isHidden ? 'text' : 'password';
-          togglePassBtn.textContent = isHidden ? EYE_HIDE : EYE_SHOW;
+          eyeShow.hidden = isHidden;
+          eyeHide.hidden = !isHidden;
           togglePassBtn.setAttribute('aria-pressed', String(isHidden));
           togglePassBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
           togglePassBtn.setAttribute('title', isHidden ? 'Hide password' : 'Show password');

@@ -11,6 +11,12 @@ const router = express.Router();
 router.get('/', authenticate, reservationController.list);
 
 /**
+ * GET /api/reservations/schedule
+ * Approved schedule entries only; personal request details are not exposed.
+ */
+router.get('/schedule', authenticate, reservationController.schedule);
+
+/**
  * POST /api/reservations
  * Role: Instructor only.
  */
@@ -20,11 +26,6 @@ router.post('/', authenticate, requireCanReserve, reservationController.create);
  * GET /api/reservations/:id
  */
 router.get('/:id', authenticate, reservationController.get);
-
-/**
- * DELETE /api/reservations/:id
- */
-router.delete('/:id', authenticate, reservationController.remove);
 
 /**
  * PATCH /api/reservations/:id/status

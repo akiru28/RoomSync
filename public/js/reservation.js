@@ -2,9 +2,13 @@
 document.addEventListener('DOMContentLoaded', async () => {
   if (!(await Auth.requireCanReserve())) return;
   const form = document.getElementById('reservation-form'); if (!form) return;
-  const select = form.querySelector('[name="room_id"]'); select.innerHTML = '<option>Loading rooms…</option>';
-  try { const rooms = await Api.get('/rooms'); select.innerHTML = '<option value="">Select a room…</option>' + rooms.map(r => `<option value="${r.id}">${r.name} (${r.capacity} pax)</option>`).join(''); }
-  catch (err) { select.innerHTML = '<option value="">Unable to load rooms</option>'; window.showToast('error', 'Rooms unavailable', err.message); }
+  const select = form.querySelector('[name="room_id"]'); const loading = document.createElement('option'); loading.textContent = 'Loading rooms…'; select.replaceChildren(loading);
+  try {
+    const rooms = await Api.get('/rooms'); const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'Select a room…';
+    const options = rooms.map(r => { const option = document.createElement('option'); option.value = r.id; option.textContent = `${r.name} (${r.capacity} pax)`; return option; });
+    select.replaceChildren(placeholder, ...options);
+  }
+  catch (err) { const unavailable = document.createElement('option'); unavailable.value = ''; unavailable.textContent = 'Unable to load rooms'; select.replaceChildren(unavailable); window.showToast('error', 'Rooms unavailable', err.message); }
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); const f = Object.fromEntries(new FormData(form).entries()); const start = new Date(f.start_time), end = new Date(f.end_time);
     if (!f.room_id || !f.purpose || Number.isNaN(start) || Number.isNaN(end) || start >= end) return window.showToast('warning', 'Check reservation details', 'Choose a room, purpose, and a valid time range.');

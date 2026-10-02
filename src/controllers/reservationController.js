@@ -31,6 +31,15 @@ async function list(req, res, next) {
   }
 }
 
+async function schedule(req, res, next) {
+  try {
+    const entries = await reservationService.schedule(req.query || {});
+    return success(res, entries, 'OK');
+  } catch (err) {
+    return next(err);
+  }
+}
+
 /**
  * GET /api/reservations/:id
  * @param {import('express').Request} req
@@ -84,21 +93,6 @@ async function updateForAdmin(req, res, next) {
 }
 
 /**
- * DELETE /api/reservations/:id
- * @param {import('express').Request} req
- * @param {import('express').Response} res
- */
-async function remove(req, res, next) {
-  try {
-    const removed = await reservationService.remove(req.params.id, req.user);
-    if (!removed) return error(res, 'Reservation not found.', 404);
-    return success(res, null, 'Reservation removed.');
-  } catch (err) {
-    return next(err);
-  }
-}
-
-/**
  * PATCH /api/reservations/:id/status
  * Body: { status }
  * @param {import('express').Request} req
@@ -114,4 +108,4 @@ async function updateStatus(req, res, next) {
   }
 }
 
-module.exports = { list, get, create, createForAdmin, updateForAdmin, remove, updateStatus };
+module.exports = { list, schedule, get, create, createForAdmin, updateForAdmin, updateStatus };

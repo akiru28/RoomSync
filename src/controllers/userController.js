@@ -54,6 +54,9 @@ async function updateMe(req, res, next) {
  */
 async function getById(req, res, next) {
   try {
+    if (String(req.user.id) !== String(req.params.id) && req.user.role !== ROLES.ADMIN) {
+      return error(res, 'Forbidden: you may only view your own profile.', 403);
+    }
     const user = await userRepo.findById(req.params.id);
     if (!user) return error(res, 'User not found.', 404);
     return success(res, sanitize(user), 'OK');

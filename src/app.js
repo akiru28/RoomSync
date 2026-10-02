@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 const { notFound, globalError } = require('./middleware/errorMiddleware');
 const {
   pageAuthenticate,
@@ -37,6 +38,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, service: 'roomsync', time: new Date().toISOString() });
@@ -66,9 +68,10 @@ app.get('/register', (req, res) => {
 app.get('/dashboard.html', pageRequireAuth(), sendPage('dashboard.html'));
 app.get('/rooms.html', pageRequireAuth(), sendPage('rooms.html'));
 app.get('/labs.html', pageRequireAuth(), sendPage('labs.html'));
-app.get('/calendar.html', pageRequireAuth(), pageRequireRole(ROLES.STUDENT, ROLES.INSTRUCTOR, ROLES.ADMIN), sendPage('calendar.html'));
+app.get('/calendar.html', pageRequireAuth(), pageRequireRole(ROLES.STUDENT, ROLES.INSTRUCTOR, ROLES.LAB_TECH, ROLES.ADMIN), sendPage('calendar.html'));
 app.get('/profile.html', pageRequireAuth(), sendPage('profile.html'));
 app.get('/my-reservations.html', pageRequireAuth(), pageRequireRole(ROLES.INSTRUCTOR, ROLES.ADMIN), sendPage('my-reservations.html'));
+app.get('/reports.html', pageRequireAuth(), pageRequireRole(ROLES.LAB_TECH, ROLES.ADMIN), sendPage('reports.html'));
 
 app.get('/reservation.html', pageRequireAuth(), pageRequireCanReserve(), sendPage('reservation.html'));
 

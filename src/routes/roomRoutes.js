@@ -2,6 +2,7 @@ const express = require('express');
 const roomController = require('../controllers/roomController');
 const { authenticate } = require('../middleware/authMiddleware');
 const { requireAdmin } = require('../middleware/roleMiddleware');
+const equipmentController = require('../controllers/equipmentController');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/:id', roomController.get);
  * GET /api/rooms/:id/availability
  */
 router.get('/:id/availability', roomController.availability);
+router.get('/:id/equipment', equipmentController.list);
 
 /**
  * POST /api/rooms (admin)

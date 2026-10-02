@@ -54,7 +54,7 @@
     <!-- header injected -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-user" data-user-only hidden>
-        <div class="sidebar-user-avatar" aria-hidden="true">👤</div>
+        <div class="sidebar-user-avatar" aria-hidden="true"></div>
         <div class="sidebar-user-info">
           <div class="sidebar-user-name" data-user-name>User</div>
           <span class="badge info small sidebar-role-pill" data-role-label></span>
@@ -68,6 +68,7 @@
           <li data-user-only><a href="calendar.html">Calendar</a></li>
           <li data-can-reserve hidden><a href="reservation.html">New Reservation</a></li>
           <li data-can-reserve hidden><a href="my-reservations.html">My Reservations</a></li>
+          <li data-report-access hidden><a href="reports.html">Lab Reports</a></li>
           <li data-admin-only hidden><a href="admin.html">Admin</a></li>
         </ul>
         <ul>
@@ -138,10 +139,11 @@
         <div class="card hero-entrance d3">
           <span class="section-label">Controls</span>
           <h3>Overview &amp; Tools</h3>
-          <p class="muted">Manage room inventory and user accounts, and review reservation requests below.</p>
+          <p class="muted">Manage reservations, room inventory, laboratory reports, equipment, and user accounts.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--space-4)">
             <a class="btn ghost" href="#room-management-title">Manage rooms</a>
             <a class="btn ghost" href="#user-management-title">Manage users</a>
+            <a class="btn ghost" href="reports.html">Lab reports &amp; equipment</a>
             <a class="btn primary" href="#reservation-management-title">Create reservation</a>
           </div>
         </div>

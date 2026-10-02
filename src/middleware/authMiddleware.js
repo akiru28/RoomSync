@@ -2,6 +2,7 @@ const env = require('../config/environment');
 const { error } = require('../utils/response');
 const userRepository = require('../repositories/userRepository');
 const { SESSION_COOKIE, CAN_RESERVE_ROLES, ROLES } = require('../constants/roles');
+const { verifyToken } = require('../utils/generateId');
 
 const DEV_BYPASS_TOKEN = 'dev-bypass-admin-token';
 
@@ -54,6 +55,9 @@ async function authenticate(req, res, next) {
     };
     return next();
   }
+  if (!verifyToken(token, env.jwt.secret)) {
+    return error(res, 'Invalid or expired token.', 401);
+  }
 
   let user;
   try {
@@ -82,6 +86,10 @@ async function pageAuthenticate(req, res, next) {
       role: 'admin',
       department: 'Development',
     };
+    return next();
+  }
+  if (!verifyToken(token, env.jwt.secret)) {
+    req.user = null;
     return next();
   }
   try {
