@@ -79,9 +79,9 @@
 
       <section class="stat-row hero-entrance d2">
         <div class="stat-card" id="stat-labs-count"><small>Laboratories</small><div class="stat-num">—</div></div>
-        <div class="stat-card"><small>Workstations</small><div class="stat-num" id="stat-stations">—</div></div>
-        <div class="stat-card"><small>Open now</small><div class="stat-num" id="stat-open-lab">—</div></div>
-        <div class="stat-card"><small>Seats (avg)</small><div class="stat-num" id="stat-seats-avg">—</div></div>
+        <div class="stat-card" id="stat-stations"><small>Workstations</small><div class="stat-num">—</div></div>
+        <div class="stat-card" id="stat-open-lab"><small>Open now</small><div class="stat-num">—</div></div>
+        <div class="stat-card" id="stat-seats-avg"><small>Seats (avg)</small><div class="stat-num">—</div></div>
       </section>
 
       <section id="rooms-list" class="grid-3 mt-lg hero-entrance d3">
@@ -96,24 +96,6 @@
   <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/rooms.js"></script>
-  <script>
-    (function(){
-      const updateStats = (rooms) => {
-        const labs = rooms.filter(r => r.type === 'lab');
-        const setStat = (id, label, value) => { const el = document.getElementById(id); if (el) el.innerHTML = `<small>${label}</small><div class="stat-num">${value}</div>`; };
-        const stations = labs.reduce((s,r) => s + (Number(r.capacity)||0), 0);
-        const open = labs.filter(r => r.isActive !== false).length;
-        const seats = labs.length ? Math.round(stations / labs.length) : 0;
-        setStat('stat-labs-count','Laboratories', labs.length);
-        setStat('stat-stations','Workstations', stations);
-        setStat('stat-open-lab','Open now', open);
-        setStat('stat-seats-avg','Seats (avg)', seats);
-      };
-      window.addEventListener('DOMContentLoaded', async () => {
-        try { const all = await Api.get('/rooms'); updateStats(all); } catch(_){}
-      });
-    })();
-  </script>
   <script>
     (function(){
       var mq=window.matchMedia('(prefers-reduced-motion: reduce)');

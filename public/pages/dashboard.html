@@ -79,44 +79,48 @@
       </header>
 
       <section class="stat-row hero-entrance d2">
-        <div class="stat-card"><small>Today</small><div class="stat-num" id="stat-today">0</div></div>
-        <div class="stat-card"><small>This Week</small><div class="stat-num" id="stat-week">0</div></div>
-        <div class="stat-card"><small>Pending</small><div class="stat-num" id="stat-pending">0</div></div>
-        <div class="stat-card"><small>Rooms</small><div class="stat-num" id="stat-rooms">0</div></div>
+        <div class="stat-card"><small>Today’s Bookings</small><div class="stat-num" id="stat-today">—</div></div>
+        <div class="stat-card"><small>This Week</small><div class="stat-num" id="stat-week">—</div></div>
+        <div class="stat-card"><small id="stat-pending-label">Pending</small><div class="stat-num" id="stat-pending">—</div></div>
+        <div class="stat-card"><small>Active Rooms</small><div class="stat-num" id="stat-rooms">—</div></div>
       </section>
 
       <section class="grid-3">
         <div class="card hero-entrance d3">
           <span class="section-label">Agenda</span>
-          <h3>Upcoming Reservations</h3>
+          <h3>Upcoming Room Schedule</h3>
           <ul id="upcoming-list" class="list">
-            <li class="muted">No reservations yet.</li>
+            <li class="muted">Loading the approved room schedule…</li>
           </ul>
         </div>
         <div class="card hero-entrance d4">
           <span class="section-label">Inventory</span>
           <h3>Rooms Summary</h3>
           <ul class="summary-list" id="summary-list">
-            <li>Laboratories: <strong>5</strong></li>
-            <li>Classrooms: <strong>24</strong></li>
-            <li>Pending requests: <strong>2</strong></li>
+            <li class="muted">Loading room inventory…</li>
           </ul>
         </div>
         <div class="card hero-entrance d5">
-          <span class="section-label">Updates</span>
-          <h3>Notifications</h3>
-          <div class="muted">No new notifications</div>
+          <span class="section-label">Navigation</span>
+          <h3>Quick Links</h3>
+          <div id="dashboard-quick-links" style="display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn ghost small" href="rooms.html">Browse rooms</a>
+            <a class="btn ghost small" href="calendar.html">View calendar</a>
+            <a class="btn ghost small" href="reservation.html" data-can-reserve hidden>New reservation</a>
+            <a class="btn ghost small" href="my-reservations.html" data-can-reserve hidden>My reservations</a>
+            <a class="btn ghost small" href="reports.html" data-report-access hidden>Lab reports</a>
+          </div>
         </div>
       </section>
 
       <section class="card mt-lg hero-entrance d6">
         <span class="section-label">Trail</span>
-        <h3>Recent Activities</h3>
+        <h3 id="activities-title">Recent Reservation Activity</h3>
         <div class="table-wrap mt">
           <table class="table">
-            <thead><tr><th>User</th><th>Action</th><th>When</th><th>Status</th></tr></thead>
+            <thead><tr id="activities-headers"><th id="activities-user-heading">User</th><th id="activities-action-heading">Action</th><th id="activities-when-heading">When</th><th id="activities-status-heading">Status</th></tr></thead>
             <tbody id="activities-tbody">
-              <tr><td colspan="4" class="muted">No activity yet.</td></tr>
+              <tr><td colspan="4" class="muted">Loading overview data…</td></tr>
             </tbody>
           </table>
         </div>

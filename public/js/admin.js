@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const roomForm = document.getElementById('room-form');
   const userForm = document.getElementById('user-form');
   const reservationForm = document.getElementById('reservation-form');
+  const refreshButton = document.getElementById('refresh-btn');
+  const overviewSummary = document.getElementById('admin-overview-summary');
   if (!reservationsBody || !roomsBody || !usersBody || !roomForm || !userForm || !reservationForm) return;
   let currentUsers = [];
   let currentRooms = [];
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <small>${escapeHtml(reservation.attendees)} attendees · requested ${escapeHtml(formatDateShort(reservation.createdAt))}</small></td>
         <td><div class="admin-room-actions">${actions}${editable}</div></td>
       </tr>`;
-    }).join('') : '<tr><td colspan="4">No reservation requests found.</td></tr>';
+    }).join('') : '<tr><td colspan="4">No pending requests.</td></tr>';
   }
 
   function renderRooms(rooms) {
@@ -89,9 +91,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function load() {
+    if (refreshButton) refreshButton.disabled = true;
     reservationsBody.innerHTML = '<tr><td colspan="4">Loading requests…</td></tr>';
     roomsBody.innerHTML = '<tr><td colspan="6">Loading rooms…</td></tr>';
     usersBody.innerHTML = '<tr><td colspan="5">Loading users…</td></tr>';
+    if (overviewSummary) overviewSummary.textContent = 'Loading overview data…';
     try {
       const [reservations, rooms, users] = await Promise.all([
         Api.get('/admin/reservations'),
@@ -101,18 +105,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentUsers = users;
       currentRooms = rooms;
       renderReservationOptions();
-      const counts = ['pending', 'approved', 'rejected', 'cancelled']
-        .map((status) => `${status}: ${reservations.filter((reservation) => reservation.status === status).length}`)
-        .join(' · ');
-      const overview = document.querySelector('.grid-2 .card:nth-child(2) p');
-      if (overview) overview.textContent = `${rooms.filter((room) => room.isActive !== false && room.isActive !== 0).length} active rooms/labs · ${users.length} users · ${counts}`;
-      renderReservations(reservations);
+      const pending = reservations.filter((reservation) => reservation.status === 'pending');
+      const activeRooms = rooms.filter((room) => room.isActive !== false && room.isActive !== 0);
+      if (overviewSummary) {
+        overviewSummary.textContent = `${pending.length} pending reservations · ${activeRooms.length} active rooms and labs · ${users.length} user accounts`;
+      }
+      renderReservations(pending);
       renderRooms(rooms);
       renderUsers(users);
     } catch (error) {
       reservationsBody.innerHTML = `<tr><td colspan="4">Unable to load admin data: ${escapeHtml(error.message)}</td></tr>`;
       roomsBody.innerHTML = `<tr><td colspan="6">Unable to load room inventory: ${escapeHtml(error.message)}</td></tr>`;
       usersBody.innerHTML = `<tr><td colspan="5">Unable to load user accounts: ${escapeHtml(error.message)}</td></tr>`;
+      if (overviewSummary) overviewSummary.textContent = `Unable to load overview data: ${error.message}`;
+    } finally {
+      if (refreshButton) refreshButton.disabled = false;
     }
   }
 
@@ -372,5 +379,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  window.addEventListener('roomsync:refresh', (event) => {
+    event.preventDefault();
+    load();
+  });
   await load();
 });

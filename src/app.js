@@ -55,6 +55,7 @@ const sendPage = (file) => (req, res) => res.sendFile(path.join(pagesDir, file))
 
 app.get('/', sendPage('index.html'));
 app.get('/index.html', sendPage('index.html'));
+app.get('/home.html', sendPage('home.html'));
 app.get('/login.html', (req, res) => {
   if (req.user) return res.redirect('/dashboard.html');
   return sendPage('login.html')(req, res);
@@ -62,7 +63,7 @@ app.get('/login.html', (req, res) => {
 app.get('/login', (req, res) => res.redirect('/login.html'));
 app.get('/register', (req, res) => {
   if (req.user) return res.redirect('/dashboard.html');
-  return res.redirect('/index.html#signin');
+  return res.redirect('/home.html');
 });
 
 app.get('/dashboard.html', pageRequireAuth(), sendPage('dashboard.html'));

@@ -12,7 +12,7 @@ Structure (created):
 - components/*.html (header/footer/modals)
 
 How to use:
-1. Open any page in the `public/` folder in your browser (e.g., open public/index.html).
+1. Open `public/index.html` for the splash screen or `public/home.html` for the home page.
 2. When backend APIs exist, update the JS fetch endpoints in assets/js/*.js to point to the server.
 
 Notes for developers:

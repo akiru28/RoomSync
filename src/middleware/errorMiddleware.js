@@ -3,7 +3,7 @@ const env = require('../config/environment');
 const { error } = require('../utils/response');
 
 /**
- * 404 handler — returns JSON error for API routes, or serves index.html
+ * 404 handler — returns JSON error for API routes, or serves the home page
  * as a SPA-style fallback for non-API paths.
  * @param {import('express').Request} req
  * @param {import('express').Response} res
@@ -14,7 +14,7 @@ function notFound(req, res, next) {
     return error(res, 'Not found.', 404);
   }
   const pagesDir = path.resolve(__dirname, '../../public/pages');
-  return res.status(404).sendFile(path.join(pagesDir, 'index.html'));
+  return res.status(404).sendFile(path.join(pagesDir, 'home.html'));
 }
 
 /**

@@ -644,6 +644,65 @@ svg[hidden]{display:none}
 }
 .form-section h4{margin:0 0 var(--space-3);font-size:var(--fs-md)}
 .form-actions{display:flex;gap:var(--space-3);align-items:center;margin-top:var(--space-2);flex-wrap:wrap}
+
+/* Shared controls for forms that use the field grid or page-specific layouts. */
+form .field,
+.filters .field{
+  display:flex;flex-direction:column;gap:7px;min-width:0;
+  color:var(--text-2);font-size:var(--fs-sm);font-weight:700;letter-spacing:.01em;
+}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),
+  select,textarea),
+.filters :is(input,select,textarea){
+  display:block;width:100%;min-width:0;min-height:46px;
+  padding:11px 13px;border:1px solid var(--border-2);border-radius:var(--radius);
+  background:var(--surface-2);color:var(--text);
+  font:500 var(--fs-sm)/1.45 'Inter','Segoe UI',system-ui,-apple-system,Arial,sans-serif;
+  color-scheme:inherit;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease),background-color .18s var(--ease);
+}
+form textarea,
+.filters textarea{min-height:108px;line-height:1.6;resize:vertical}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),textarea)::placeholder,
+.filters :is(input,textarea)::placeholder{color:var(--muted-2);opacity:1}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea):hover,
+.filters :is(input,select,textarea):hover{border-color:var(--accent)}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea):focus-visible,
+.filters :is(input,select,textarea):focus-visible{
+  outline:none;border-color:var(--accent);background:var(--surface);
+  box-shadow:var(--shadow-focus)
+}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea):user-invalid{
+  border-color:var(--danger);background:var(--danger-bg);
+  box-shadow:0 0 0 3px rgba(220,38,38,.12)
+}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea)[aria-invalid="true"],
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea).error{
+  border-color:var(--danger);background:var(--danger-bg);
+  box-shadow:0 0 0 3px rgba(220,38,38,.12)
+}
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea):disabled,
+form :is(:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])),select,textarea)[readonly]{
+  background:var(--bg-2);color:var(--muted);cursor:not-allowed
+}
+form input[type="checkbox"],
+form input[type="radio"]{
+  width:18px;height:18px;flex:0 0 auto;margin:0;
+  accent-color:var(--blue-600);cursor:pointer
+}
+form .field:has(input[type="checkbox"]),
+form .field:has(input[type="radio"]){gap:10px}
+form .field:has(input[type="checkbox"]) > span,
+form .field:has(input[type="radio"]) > span{
+  display:flex;align-items:center;gap:10px;min-height:44px
+}
+form .field > small{color:var(--muted);font-size:var(--fs-xs);font-weight:400;letter-spacing:0}
+form .form-actions,
+form .report-actions{
+  display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap
+}
+form .form-actions .btn,
+form .report-actions .btn{min-height:42px}
 .filters{
   display:grid;grid-template-columns:1fr 220px;gap:var(--space-4);align-items:end;
   padding:var(--space-4);

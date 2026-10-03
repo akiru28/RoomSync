@@ -3,10 +3,25 @@
   'use strict';
   const TOKEN = 'rr_token', USER = 'rr_user';
   const THEME = 'rr_theme';
+  const THEME_ENABLED_PAGES = new Set([
+    'admin.html',
+    'calendar.html',
+    'dashboard.html',
+    'labs.html',
+    'my-reservations.html',
+    'profile.html',
+    'reports.html',
+    'reservation.html',
+    'rooms.html',
+  ]);
   const CAN_RESERVE = ['instructor'];
   const CAN_APPROVE = ['admin'];
+  const currentPage = location.pathname.split('/').pop().toLowerCase();
+  const themeEnabled = THEME_ENABLED_PAGES.has(currentPage);
   const savedTheme = localStorage.getItem(THEME);
-  if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+  if (themeEnabled && (savedTheme === 'light' || savedTheme === 'dark')) {
+    document.documentElement.dataset.theme = savedTheme;
+  }
   let currentUser = null, readyPromise = Promise.resolve(null);
   const qs = (s, c) => (c || document).querySelector(s);
   const qa = (s, c) => Array.from((c || document).querySelectorAll(s));
@@ -95,7 +110,7 @@
       qa('[data-role-label]').forEach((el) => el.textContent = user ? Auth.displayRole(user.role) : '');
       qa('[data-user-name]').forEach((el) => el.textContent = user?.name || user?.email || 'User');
       qa('a.brand').forEach((el) => {
-        el.setAttribute('href', user ? 'dashboard.html' : 'index.html');
+        el.setAttribute('href', user ? 'dashboard.html' : 'home.html');
       });
       qa('[data-logout]').forEach((el) => {
         el.onclick = (e) => {
@@ -111,13 +126,18 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (event) => {
       if (!event.target.closest('[data-theme-toggle]')) return;
+      if (!themeEnabled) return;
       const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = theme;
       localStorage.setItem(THEME, theme);
       syncThemeToggle();
     });
     const year = qs('#footer-year'); if (year) year.textContent = new Date().getFullYear();
-    qs('#refresh-btn')?.addEventListener('click', () => location.reload());
+    qs('#refresh-btn')?.addEventListener('click', () => {
+      const refreshEvent = new CustomEvent('roomsync:refresh', { cancelable: true });
+      window.dispatchEvent(refreshEvent);
+      if (!refreshEvent.defaultPrevented) location.reload();
+    });
 
     const header = qs('.site-header');
     const applyScroll = () => { if (header) header.classList.toggle('scrolled', window.scrollY > 8); };

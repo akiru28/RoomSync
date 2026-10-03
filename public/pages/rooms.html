@@ -79,9 +79,9 @@
 
       <section class="stat-row hero-entrance d2">
         <div class="stat-card" id="stat-rooms"><small>Rooms</small><div class="stat-num">—</div></div>
-        <div class="stat-card"><small>Laboratories</small><div class="stat-num" id="stat-labs">—</div></div>
-        <div class="stat-card"><small>Open now</small><div class="stat-num" id="stat-open">—</div></div>
-        <div class="stat-card"><small>Seats (avg)</small><div class="stat-num" id="stat-seats">—</div></div>
+        <div class="stat-card" id="stat-labs"><small>Laboratories</small><div class="stat-num">—</div></div>
+        <div class="stat-card" id="stat-open"><small>Open now</small><div class="stat-num">—</div></div>
+        <div class="stat-card" id="stat-seats"><small>Seats (avg)</small><div class="stat-num">—</div></div>
       </section>
 
       <section class="filters hero-entrance d3">
@@ -109,23 +109,6 @@
   <script src="../js/api.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/rooms.js"></script>
-  <script>
-    (function(){
-      const updateStats = (rooms) => {
-        const labs = rooms.filter(r => r.type === 'lab').length;
-        const open = rooms.filter(r => r.isActive !== false).length;
-        const seats = rooms.length ? Math.round(rooms.reduce((s,r)=>s + (Number(r.capacity)||0),0) / rooms.length) : 0;
-        const setStat = (id, label, value) => { const el = document.getElementById(id); if (el) el.innerHTML = `<small>${label}</small><div class="stat-num">${value}</div>`; };
-        setStat('stat-rooms','Rooms', rooms.length);
-        setStat('stat-labs','Laboratories', labs);
-        setStat('stat-open','Open now', open);
-        setStat('stat-seats','Seats (avg)', seats);
-      };
-      window.addEventListener('DOMContentLoaded', async () => {
-        try { const all = await Api.get('/rooms'); updateStats(all); } catch(_){}
-      });
-    })();
-  </script>
   <script>
     (function(){
       var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
