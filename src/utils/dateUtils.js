@@ -9,6 +9,31 @@ function toISO(d) {
 }
 
 /**
+ * Convert a date value to a MySQL DATETIME string in UTC.
+ * @param {Date|string|number} value
+ * @returns {string}
+ */
+function toMySqlUtcDateTime(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new RangeError('A valid date is required.');
+  }
+  return date.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+/**
+ * Mark a MySQL DATETIME value as UTC for unambiguous API serialization.
+ * @param {string} value
+ * @returns {string}
+ */
+function fromMySqlUtcDateTime(value) {
+  const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})(?:\.(\d{1,6}))?$/.exec(value);
+  if (!match) return value;
+  const milliseconds = (match[3] || '').slice(0, 3).padEnd(3, '0');
+  return `${match[1]}T${match[2]}.${milliseconds}Z`;
+}
+
+/**
  * Check if two dates are on the same calendar day.
  * @param {Date|string|number} a - First date
  * @param {Date|string|number} b - Second date
@@ -114,6 +139,8 @@ function endOfDay(d) {
 
 module.exports = {
   toISO,
+  toMySqlUtcDateTime,
+  fromMySqlUtcDateTime,
   isSameDay,
   diffInMinutes,
   roundToMinutes,

@@ -1,6 +1,7 @@
--- Additive migration for existing RoomSync installations.
--- Requires rooms.id INT UNSIGNED and users.id VARCHAR(100), as in
--- roomsync_database.sql and the current roomsync.sql schema.
+-- Additive, rerunnable migration for MariaDB 10.4+ RoomSync installations.
+-- Existing report/equipment rows must use the same room_id; the composite
+-- foreign key below will reject any cross-room references.
+-- Equipment referenced by historical reports cannot be deleted; retire it instead.
 USE lecture_room_reservation;
 
 CREATE TABLE IF NOT EXISTS equipment (
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS equipment (
         ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uq_equipment_code (code),
+    UNIQUE KEY uq_equipment_id_room (id, room_id),
     KEY idx_equipment_room_status (room_id, status),
     CONSTRAINT fk_equipment_room
         FOREIGN KEY (room_id) REFERENCES rooms(id)
@@ -22,6 +24,20 @@ CREATE TABLE IF NOT EXISTS equipment (
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
+
+SET @roomsync_sql = IF(
+    EXISTS (
+        SELECT 1 FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'equipment'
+          AND index_name = 'uq_equipment_id_room'
+    ),
+    'SELECT 1',
+    'ALTER TABLE equipment ADD UNIQUE KEY uq_equipment_id_room (id, room_id)'
+);
+PREPARE roomsync_stmt FROM @roomsync_sql;
+EXECUTE roomsync_stmt;
+DEALLOCATE PREPARE roomsync_stmt;
 
 CREATE TABLE IF NOT EXISTS laboratory_reports (
     id VARCHAR(100) NOT NULL,
@@ -41,17 +57,76 @@ CREATE TABLE IF NOT EXISTS laboratory_reports (
     PRIMARY KEY (id),
     KEY idx_laboratory_reports_room_status (room_id, status),
     KEY idx_laboratory_reports_reporter (reported_by, created_at),
-    KEY idx_laboratory_reports_equipment (equipment_id),
+    KEY idx_laboratory_reports_equipment (equipment_id, room_id),
     KEY idx_laboratory_reports_status (status),
     CONSTRAINT fk_laboratory_report_room
         FOREIGN KEY (room_id) REFERENCES rooms(id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_laboratory_report_equipment
-        FOREIGN KEY (equipment_id) REFERENCES equipment(id)
-        ON UPDATE CASCADE ON DELETE SET NULL,
+    CONSTRAINT fk_laboratory_report_equipment_room
+        FOREIGN KEY (equipment_id, room_id) REFERENCES equipment(id, room_id)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_laboratory_report_reporter
         FOREIGN KEY (reported_by) REFERENCES users(id)
         ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
+
+SET @roomsync_sql = CASE
+    WHEN EXISTS (
+        SELECT 1 FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'laboratory_reports'
+          AND index_name = 'idx_laboratory_reports_equipment'
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'laboratory_reports'
+          AND index_name = 'idx_laboratory_reports_equipment'
+          AND seq_in_index = 2
+          AND column_name = 'room_id'
+    )
+    THEN 'ALTER TABLE laboratory_reports DROP INDEX idx_laboratory_reports_equipment, ADD KEY idx_laboratory_reports_equipment (equipment_id, room_id)'
+    WHEN NOT EXISTS (
+        SELECT 1 FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'laboratory_reports'
+          AND index_name = 'idx_laboratory_reports_equipment'
+    )
+    THEN 'ALTER TABLE laboratory_reports ADD KEY idx_laboratory_reports_equipment (equipment_id, room_id)'
+    ELSE 'SELECT 1'
+END;
+PREPARE roomsync_stmt FROM @roomsync_sql;
+EXECUTE roomsync_stmt;
+DEALLOCATE PREPARE roomsync_stmt;
+
+SET @roomsync_sql = IF(
+    EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_schema = DATABASE()
+          AND table_name = 'laboratory_reports'
+          AND constraint_name = 'fk_laboratory_report_equipment_room'
+          AND constraint_type = 'FOREIGN KEY'
+    ),
+    'SELECT 1',
+    'ALTER TABLE laboratory_reports ADD CONSTRAINT fk_laboratory_report_equipment_room FOREIGN KEY (equipment_id, room_id) REFERENCES equipment (id, room_id) ON UPDATE CASCADE ON DELETE RESTRICT'
+);
+PREPARE roomsync_stmt FROM @roomsync_sql;
+EXECUTE roomsync_stmt;
+DEALLOCATE PREPARE roomsync_stmt;
+
+SET @roomsync_sql = IF(
+    EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_schema = DATABASE()
+          AND table_name = 'laboratory_reports'
+          AND constraint_name = 'fk_laboratory_report_equipment'
+          AND constraint_type = 'FOREIGN KEY'
+    ),
+    'ALTER TABLE laboratory_reports DROP FOREIGN KEY fk_laboratory_report_equipment',
+    'SELECT 1'
+);
+PREPARE roomsync_stmt FROM @roomsync_sql;
+EXECUTE roomsync_stmt;
+DEALLOCATE PREPARE roomsync_stmt;

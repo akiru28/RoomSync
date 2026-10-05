@@ -2,6 +2,31 @@ const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 const { generateToken, verifyToken } = require('../../src/utils/generateId');
+const { fromMySqlUtcDateTime, toMySqlUtcDateTime } = require('../../src/utils/dateUtils');
+const { createReservation: validateReservation } = require('../../src/validators/reservationValidator');
+
+test('reservation datetimes round-trip through MySQL DATETIME as UTC', () => {
+  const utcDate = '2026-10-03T10:15:00.000Z';
+  const storedDate = toMySqlUtcDateTime(utcDate);
+  assert.equal(storedDate, '2026-10-03 10:15:00');
+  assert.equal(fromMySqlUtcDateTime(storedDate), utcDate);
+});
+
+test('reservations require a program/section within the supported length', () => {
+  assert.equal(validateReservation({
+    roomId: 1,
+    purpose: 'Class',
+    startDate: '2026-10-05T08:00:00.000Z',
+    endDate: '2026-10-05T09:00:00.000Z',
+  }), 'Program/section is required.');
+  assert.equal(validateReservation({
+    roomId: 1,
+    purpose: 'Class',
+    programSection: 'A'.repeat(151),
+    startDate: '2026-10-05T08:00:00.000Z',
+    endDate: '2026-10-05T09:00:00.000Z',
+  }), 'Program/section must not exceed 150 characters.');
+});
 
 test('signed access tokens verify only with the issuing secret and expire', async (t) => {
   const secret = 'unit-test-secret-that-is-at-least-32-chars';

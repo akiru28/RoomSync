@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   try { const rows = await Api.get('/reservations'); if (!rows.length) { const message = document.createElement('p'); message.className = 'muted'; message.textContent = 'No reservation requests found.'; root.replaceChildren(message); return; }
     const table = document.createElement('table'); table.className = 'table';
     const thead = document.createElement('thead'), header = document.createElement('tr');
-    ['Room', 'Schedule', 'Purpose', 'Attendees', 'Status', ''].forEach(label => { const th = document.createElement('th'); th.textContent = label; header.append(th); });
+    ['Room', 'Program / Section', 'Schedule', 'Purpose', 'Attendees', 'Status', ''].forEach(label => { const th = document.createElement('th'); th.textContent = label; header.append(th); });
     thead.append(header); const tbody = document.createElement('tbody');
     rows.forEach(r => {
       const row = document.createElement('tr');
-      [r.roomName, `${formatDateLocal(r.startDate)} – ${formatTime(r.endDate)}`, r.purpose, r.attendees].forEach(value => { const cell = document.createElement('td'); cell.textContent = value ?? ''; row.append(cell); });
+      [r.roomName, r.programSection || '—', `${formatDateLocal(r.startDate)} – ${formatTime(r.endDate)}`, r.purpose, r.attendees].forEach(value => { const cell = document.createElement('td'); cell.textContent = value ?? ''; row.append(cell); });
       const statusCell = document.createElement('td'), badge = document.createElement('span'); badge.className = 'badge'; if (typeof r.status === 'string' && /^[a-z-]+$/.test(r.status)) badge.classList.add(r.status); badge.textContent = r.status ?? ''; statusCell.append(badge); row.append(statusCell);
       const actionCell = document.createElement('td');
       if (['pending', 'approved'].includes(r.status)) { const button = document.createElement('button'); button.className = 'btn ghost small'; button.dataset.cancel = r.id; button.textContent = 'Cancel'; actionCell.append(button); }

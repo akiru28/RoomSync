@@ -254,6 +254,8 @@ cp .env.example .env
 # WARNING: that SQL script drops existing tables before recreating them.
 # For an existing compatible schema, review and apply sql/add_laboratory_reporting.sql
 # to add the equipment and laboratory-report tables without dropping existing data.
+# Apply sql/add_reservation_program_section.sql to an existing database before
+# submitting reservations that include the required program/section.
 
 # 3. Start the development server with auto-reload
 npm run dev

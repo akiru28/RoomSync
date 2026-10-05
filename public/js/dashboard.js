@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (role === 'student') {
     pendingLabel.textContent = 'Laboratories';
     title.textContent = 'Upcoming Room Schedule';
-    setActivityHeaders(['Room', 'Schedule', 'Status']);
+    setActivityHeaders(['Room', 'Schedule']);
   } else if (role === 'lab_tech') {
     pendingLabel.textContent = 'Open Reports';
     title.textContent = 'My Recent Lab Reports';
@@ -120,14 +120,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         .slice(0, 5);
       upcoming.innerHTML = upcomingBookings.length
         ? upcomingBookings.map((item) =>
-          `<li><strong>${escapeHtml(item.roomName)}</strong> — ${escapeHtml(formatDateLocal(item.startDate))} <span class="badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></li>`
+          role === 'student'
+            ? `<li><strong>${escapeHtml(item.roomName)}</strong> — ${escapeHtml(formatDateLocal(item.startDate))}</li>`
+            : `<li><strong>${escapeHtml(item.roomName)}</strong> — ${escapeHtml(formatDateLocal(item.startDate))} <span class="badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></li>`
         ).join('')
         : '<li class="muted">No upcoming approved reservations.</li>';
 
       if (role === 'student') {
         activities.innerHTML = upcomingBookings.length
           ? upcomingBookings.slice(0, 6).map((item) =>
-            `<tr><td>${escapeHtml(item.roomName)}</td><td>${escapeHtml(formatDateLocal(item.startDate))} – ${escapeHtml(formatTime(item.endDate))}</td><td><span class="badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td></tr>`
+            `<tr><td>${escapeHtml(item.roomName)}</td><td>${escapeHtml(formatDateLocal(item.startDate))} – ${escapeHtml(formatTime(item.endDate))}</td></tr>`
           ).join('')
           : `<tr><td colspan="${activityColumnCount}" class="muted">No upcoming approved reservations.</td></tr>`;
       }

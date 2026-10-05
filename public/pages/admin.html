@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#12355B">
   <title>Admin — RoomSync</title>
+  <link rel="icon" type="image/png" href="../assets/logos/logo.png">
   <link rel="stylesheet" href="../css/main.css">
   <style>
     html{scroll-behavior:smooth;scroll-padding-top:68px}
@@ -167,6 +168,9 @@
           <label class="field field-wide">Purpose
             <input name="purpose" maxlength="255" required>
           </label>
+          <label class="field field-wide">Program / Section
+            <input name="programSection" maxlength="150" required placeholder="e.g., BSIT 3A">
+          </label>
           <label class="field">Start
             <input name="startDate" type="datetime-local" required>
           </label>
@@ -188,13 +192,13 @@
 
       <section class="grid-2 mt">
         <div class="card hero-entrance d2">
-          <span class="section-label">Queue</span>
-          <h3>Reservations for Review</h3>
+          <span class="section-label">Requests</span>
+          <h3>Reservation Requests</h3>
           <div class="table-wrap mt">
             <table class="table">
-              <thead><tr><th>User</th><th>Room</th><th>When</th><th>Actions</th></tr></thead>
+              <thead><tr><th>Instructor</th><th>Room / Purpose / Program</th><th>When</th><th>Status / Actions</th></tr></thead>
               <tbody id="pending-tbody">
-                <tr><td colspan="4" class="muted">No pending requests.</td></tr>
+                <tr><td colspan="4" class="muted">No reservation requests.</td></tr>
               </tbody>
             </table>
           </div>

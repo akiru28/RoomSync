@@ -5,7 +5,6 @@ const {
   createReservation: validateCreate,
   updateStatus: validateStatus,
 } = require('../validators/reservationValidator');
-const conflictService = require('./conflictService');
 const notificationService = require('./notificationService');
 const {
   RESERVATION_STATUSES,
@@ -30,6 +29,21 @@ const STATUS_TRANSITIONS = {
   [RESERVATION_STATUSES.CANCELLED]: [],
   [RESERVATION_STATUSES.COMPLETED]: [],
 };
+
+function requireAvailableReservation(result) {
+  if (result.conflicts.length) {
+    const err = new Error('Room is already reserved in that time range.');
+    err.status = 409;
+    err.meta = { conflicts: result.conflicts };
+    throw err;
+  }
+  if (!result.reservation) {
+    const err = new Error('Room or reservation was not found.');
+    err.status = 404;
+    throw err;
+  }
+  return result.reservation;
+}
 
 /**
  * Create a new reservation request.
@@ -68,14 +82,6 @@ async function create(payload, actor) {
   const startDate = new Date(payload.startDate ?? payload.start_time).toISOString();
   const endDate = new Date(payload.endDate ?? payload.end_time).toISOString();
 
-  const { hasConflict, conflicts } = await conflictService.checkConflict(roomId, startDate, endDate);
-  if (hasConflict) {
-    const err = new Error('Room is already reserved in that time range.');
-    err.status = 409;
-    err.meta = { conflicts };
-    throw err;
-  }
-
   if (!actor || !CAN_RESERVE_ROLES.includes(actor.role)) {
     const err = new Error('Forbidden: your role is not permitted to create reservations.');
     err.status = 403;
@@ -85,18 +91,20 @@ async function create(payload, actor) {
   // Every reservation is submitted by an Instructor and must be reviewed by Admin.
   const defaultStatus = RESERVATION_STATUSES.PENDING;
 
-  const reservation = await reservationRepo.create({
+  const reservationResult = await reservationRepo.createIfAvailable({
     roomId,
     roomName: room.name,
     userId: actor ? actor.id : (payload.userId || 'guest'),
     userName: actor ? actor.name : (payload.userName || payload.user || 'Guest'),
     purpose: String(payload.purpose).trim(),
+    programSection: String(payload.programSection).trim(),
     startDate,
     endDate,
     attendees,
     notes: payload.notes || '',
     status: defaultStatus,
   });
+  const reservation = requireAvailableReservation(reservationResult);
 
   await notificationService.onReservationCreated(reservation);
   return reservation;
@@ -224,7 +232,7 @@ function requireAdmin(actor) {
   }
 }
 
-async function validateAdminReservation(payload, excludeId) {
+async function validateAdminReservation(payload) {
   const validationError = validateCreate(payload);
   if (validationError) {
     const err = new Error(validationError);
@@ -277,18 +285,11 @@ async function validateAdminReservation(payload, excludeId) {
 
   const startDate = new Date(payload.startDate ?? payload.start_time).toISOString();
   const endDate = new Date(payload.endDate ?? payload.end_time).toISOString();
-  const { hasConflict, conflicts } = await conflictService.checkConflict(roomId, startDate, endDate, excludeId);
-  if (hasConflict) {
-    const err = new Error('Room is already reserved in that time range.');
-    err.status = 409;
-    err.meta = { conflicts };
-    throw err;
-  }
-
   return {
     roomId,
     userId,
     purpose: String(payload.purpose).trim(),
+    programSection: String(payload.programSection).trim(),
     startDate,
     endDate,
     attendees,
@@ -299,7 +300,10 @@ async function validateAdminReservation(payload, excludeId) {
 async function createForAdmin(payload, actor) {
   requireAdmin(actor);
   const data = await validateAdminReservation(payload);
-  const reservation = await reservationRepo.create({ ...data, status: RESERVATION_STATUSES.PENDING });
+  const reservation = requireAvailableReservation(await reservationRepo.createIfAvailable({
+    ...data,
+    status: RESERVATION_STATUSES.PENDING,
+  }));
   await notificationService.onReservationCreated(reservation);
   return reservation;
 }
@@ -318,19 +322,14 @@ async function updateForAdmin(id, payload, actor) {
     throw err;
   }
 
-  const data = await validateAdminReservation(payload, id);
+  const data = await validateAdminReservation(payload);
   const patch = { ...data };
   if (current.status === RESERVATION_STATUSES.APPROVED) {
     patch.status = RESERVATION_STATUSES.PENDING;
     patch.approvedBy = null;
     patch.approvedAt = null;
   }
-  const updated = await reservationRepo.update(id, patch);
-  if (!updated) {
-    const err = new Error('Reservation not found.');
-    err.status = 404;
-    throw err;
-  }
+  const updated = requireAvailableReservation(await reservationRepo.updateIfAvailable(id, patch));
   if (current.status !== updated.status) {
     await notificationService.onStatusChanged(updated, current.status, sanitize(actor));
   }

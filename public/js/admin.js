@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         : '';
       return `<tr>
         <td><strong>${escapeHtml(reservation.userName)}</strong><br><small>${escapeHtml(reservation.userId)}</small></td>
-        <td><strong>${escapeHtml(reservation.roomName)}</strong><br><small>${escapeHtml(reservation.purpose)}</small></td>
+        <td><strong>${escapeHtml(reservation.roomName)}</strong><br><small>${escapeHtml(reservation.purpose)} · ${escapeHtml(reservation.programSection || 'Program/section not provided')}</small></td>
         <td>${escapeHtml(formatDateLocal(reservation.startDate))} – ${escapeHtml(formatTime(reservation.endDate))}<br>
           <small>${escapeHtml(reservation.attendees)} attendees · requested ${escapeHtml(formatDateShort(reservation.createdAt))}</small></td>
         <td><div class="admin-room-actions">${actions}${editable}</div></td>
       </tr>`;
-    }).join('') : '<tr><td colspan="4">No pending requests.</td></tr>';
+    }).join('') : '<tr><td colspan="4">No reservation requests.</td></tr>';
   }
 
   function renderRooms(rooms) {
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (overviewSummary) {
         overviewSummary.textContent = `${pending.length} pending reservations · ${activeRooms.length} active rooms and labs · ${users.length} user accounts`;
       }
-      renderReservations(pending);
+      renderReservations(reservations);
       renderRooms(rooms);
       renderUsers(users);
     } catch (error) {
@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       userId: String(formData.get('userId') || ''),
       roomId: Number(formData.get('roomId')),
       purpose: String(formData.get('purpose') || '').trim(),
+      programSection: String(formData.get('programSection') || '').trim(),
       attendees: Number(formData.get('attendees')),
       notes: String(formData.get('notes') || '').trim(),
     };
@@ -347,6 +348,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         reservationForm.elements.namedItem('roomId').value = selectedRoomId;
         reservationForm.elements.namedItem('purpose').value = reservation.purpose || '';
+        reservationForm.elements.namedItem('programSection').value = reservation.programSection || '';
         reservationForm.elements.namedItem('startDate').value = dateTimeInput(reservation.startDate);
         reservationForm.elements.namedItem('endDate').value = dateTimeInput(reservation.endDate);
         reservationForm.elements.namedItem('attendees').value = reservation.attendees || 1;

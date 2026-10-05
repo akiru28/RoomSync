@@ -25,6 +25,14 @@ function createReservation(payload) {
     return 'Purpose is required.';
   }
 
+  const programSection = String(payload.programSection || '').trim();
+  if (!programSection) {
+    return 'Program/section is required.';
+  }
+  if (programSection.length > 150) {
+    return 'Program/section must not exceed 150 characters.';
+  }
+
   const start = new Date(payload.startDate ?? payload.start_time);
   const end = new Date(payload.endDate ?? payload.end_time);
   if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
