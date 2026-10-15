@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Welcome to RoomSync, the room and laboratory reservation system for Camarines Sur Polytechnic Colleges.">
+  <meta name="theme-color" content="#12355B">
+  <title>RoomSync</title>
+  <link rel="icon" type="image/png" href="../assets/logos/logo.png">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    /* ================================================================
+       RoomSync Splash Screen — Premium Animated Brand Reveal
+       ================================================================ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 1.5rem;
+      background: #091a30;
+      isolation: isolate;
+      transition: opacity .52s cubic-bezier(.2,.6,.3,1),
+                  transform .52s cubic-bezier(.2,.6,.3,1),
+                  filter .52s cubic-bezier(.2,.6,.3,1);
+    }
+
+    /* --- Animated background --- */
+    body::before {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      inset: -5%;
+      background:
+        radial-gradient(ellipse at 22% 25%, rgba(65, 139, 224, .3), transparent 38%),
+        radial-gradient(ellipse at 78% 75%, rgba(61, 119, 194, .24), transparent 36%),
+        linear-gradient(145deg, rgba(9, 26, 48, .72), rgba(10, 20, 38, .92)),
+        url("../assets/images/bg.jpg") center / cover no-repeat;
+      animation: background-drift 22s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    /* --- Leaving transition: fade + scale + blur --- */
+    body.leaving {
+      opacity: 0;
+      transform: scale(1.03);
+      filter: blur(5px);
+    }
+
+    /* ----------------------------------------------------------------
+       SPLASH CONTAINER
+       ---------------------------------------------------------------- */
+    .splash {
+      position: relative;
+      isolation: isolate;
+      width: min(100%, 42rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+      padding: clamp(2rem, 7vw, 3.5rem) clamp(1.5rem, 6vw, 3rem);
+      text-align: center;
+      color: #fff;
+      animation: splash-in .8s cubic-bezier(.2, .75, .25, 1) both;
+      will-change: transform, opacity;
+    }
+
+    /* --- Top ambient glow --- */
+    .splash::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -45%;
+      left: 50%;
+      width: 75%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: rgba(120, 180, 255, .2);
+      filter: blur(70px);
+      transform: translateX(-50%);
+      animation: glow-breathe 5s ease-in-out infinite alternate;
+    }
+
+    /* ----------------------------------------------------------------
+       LOGO WRAPPER
+       ---------------------------------------------------------------- */
+    .splash-logo-wrap {
+      position: relative;
+      width: clamp(15rem, 66vw, 27rem);
+      aspect-ratio: 1;
+    }
+
+    /* --- Logo aura glow (behind logo, settles after assembly) --- */
+    .splash-logo-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 20%;
+      z-index: -1;
+      border-radius: 50%;
+      background: rgba(79, 156, 255, .28);
+      filter: blur(52px);
+      animation: logo-aura 2s ease-out both;
+    }
+
+    /* --- SVG logo --- */
+    .splash-logo {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      filter: drop-shadow(0 .75rem 1.5rem rgba(0, 0, 0, .24));
+    }
+
+    /* --- Subtle converging particle dots (CSS pseudo-elements on wrapper parent) --- */
+    .splash-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .splash-particles::before,
+    .splash-particles::after {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(140, 195, 255, .7);
+      box-shadow:
+        28px -40px 0 0 rgba(100, 170, 255, .5),
+        -35px 50px 0 0 rgba(130, 190, 255, .4),
+        55px 25px 0 0 rgba(100, 170, 255, .35);
+      filter: blur(0.5px);
+      opacity: 0;
+    }
+    .splash-particles::before {
+      top: 15%;
+      left: 12%;
+      animation: particle-converge-left 1.4s cubic-bezier(.25,.46,.45,.94) 0.25s both;
+    }
+    .splash-particles::after {
+      bottom: 18%;
+      right: 10%;
+      animation: particle-converge-right 1.4s cubic-bezier(.25,.46,.45,.94) 0.35s both;
+    }
+
+    /* ----------------------------------------------------------------
+       TAGLINE — fades in coordinated with wordmark
+       ---------------------------------------------------------------- */
+    .splash-tagline {
+      margin: 0;
+      color: rgba(255, 255, 255, .72);
+      font-size: clamp(.68rem, 2vw, .82rem);
+      font-weight: 700;
+      letter-spacing: .17em;
+      line-height: 1.6;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: tagline-in .65s cubic-bezier(.2,.75,.25,1) .85s forwards;
+    }
+
+    /* ----------------------------------------------------------------
+       PROGRESS BAR — refined shimmer, synced to the shorter splash
+       ---------------------------------------------------------------- */
+    .splash-progress {
+      position: relative;
+      width: min(19rem, 64vw);
+      height: 2px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .12);
+      margin: .35rem 0 .1rem;
+    }
+    .splash-progress span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(140,195,255,.4), rgba(255,255,255,.9), rgba(185,217,255,.5));
+      box-shadow: 0 0 10px rgba(185, 217, 255, .5);
+      animation: splash-progress 2.72s cubic-bezier(.22, .61, .36, 1) forwards;
+    }
+
+    /* ================================================================
+       KEYFRAMES
+       ================================================================ */
+    @keyframes splash-in {
+      from { opacity: 0; transform: translateY(18px) scale(.97); filter: blur(6px); }
+      to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes logo-aura {
+      0%   { opacity: 0; transform: scale(.55); }
+      35%  { opacity: .85; }
+      65%  { opacity: .5; transform: scale(1.15); }
+      100% { opacity: .25; transform: scale(1.1); }
+    }
+
+    @keyframes tagline-in {
+      from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+      to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @keyframes splash-progress {
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes background-drift {
+      from { transform: scale(1.02) translate3d(-.5%, -.5%, 0); }
+      to   { transform: scale(1.09) translate3d(.5%, .5%, 0); }
+    }
+
+    @keyframes glow-breathe {
+      from { opacity: .55; transform: translateX(-50%) scale(.85); }
+      to   { opacity: 1; transform: translateX(-50%) scale(1.12); }
+    }
+
+    @keyframes particle-converge-left {
+      0%   { opacity: 0; transform: translate(-30px, -20px) scale(1.2); }
+      30%  { opacity: .7; }
+      80%  { opacity: .4; transform: translate(40px, 30px) scale(.5); }
+      100% { opacity: 0; transform: translate(55px, 40px) scale(0); }
+    }
+
+    @keyframes particle-converge-right {
+      0%   { opacity: 0; transform: translate(25px, 15px) scale(1.1); }
+      30%  { opacity: .6; }
+      80%  { opacity: .35; transform: translate(-35px, -25px) scale(.4); }
+      100% { opacity: 0; transform: translate(-50px, -35px) scale(0); }
+    }
+
+    /* ================================================================
+       REDUCED MOTION — instant display, no animations
+       ================================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        will-change: auto !important;
+      }
+      .splash-tagline {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="splash">
+    <div class="splash-logo-wrap">
+      <div class="splash-particles" aria-hidden="true"></div>
+      <img class="splash-logo" src="../assets/logos/roomsync-logo-assembly-fixed.svg" alt="RoomSync" fetchpriority="high">
+    </div>
+    <p class="splash-tagline">Room &amp; Laboratory Reservation System</p>
+    <div class="splash-progress" aria-hidden="true">
+      <span></span>
+    </div>
+  </main>
+  <script>
+    (function () {
+      'use strict';
+
+      var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var destination = 'home.html';
+
+      try {
+        if (localStorage.getItem('rr_token') && localStorage.getItem('rr_user')) {
+          destination = 'dashboard.html';
+        }
+      } catch (error) {
+        console.warn('RoomSync could not read the saved session; opening the public home page.', error);
+      }
+
+      var transitionStarted = false;
+      var navigationStarted = false;
+      var sequenceTimer;
+      var safetyTimer;
+      var splashLogo = document.querySelector('.splash-logo');
+
+      function navigate() {
+        if (navigationStarted) return;
+        navigationStarted = true;
+        window.clearTimeout(sequenceTimer);
+        window.clearTimeout(safetyTimer);
+        location.replace(destination === 'home.html' && !reducedMotion
+          ? 'home.html?intro=1'
+          : destination);
+      }
+
+      function startTransition() {
+        if (transitionStarted) return;
+        transitionStarted = true;
+        document.body.classList.add('leaving');
+
+        var fallbackTimer = window.setTimeout(navigate, 560);
+        document.body.addEventListener('transitionend', function onTransitionEnd(event) {
+          if (event.target !== document.body || event.propertyName !== 'opacity') return;
+          window.clearTimeout(fallbackTimer);
+          navigate();
+        });
+      }
+
+      function startSequence() {
+        if (transitionStarted || sequenceTimer) return;
+        window.clearTimeout(safetyTimer);
+        sequenceTimer = window.setTimeout(startTransition, reducedMotion ? 0 : 2740);
+      }
+
+      if (reducedMotion) {
+        startSequence();
+        return;
+      }
+
+      safetyTimer = window.setTimeout(startTransition, 4500);
+      if (splashLogo.complete) {
+        if (splashLogo.naturalWidth > 0) startSequence();
+        else window.setTimeout(startTransition, 700);
+      } else {
+        splashLogo.addEventListener('load', startSequence, { once: true });
+        splashLogo.addEventListener('error', function () {
+          window.setTimeout(startTransition, 700);
+        }, { once: true });
+      }
+    })();
+  </script>
+</body>
+</html>

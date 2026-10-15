@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12355B">
+  <title>Laboratory Reports — RoomSync</title>
+  <script src="../js/theme-init.js"></script>
+  <link rel="icon" type="image/png" href="../assets/logos/logo.png">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .report-form,.equipment-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+    .report-form .field,.equipment-form .field{margin:0}
+    .field-wide,.form-actions{grid-column:1/-1}
+    .form-actions{display:flex;gap:var(--space-2);align-items:center}
+    .report-actions{display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap}
+    @media(max-width:700px){.report-form,.equipment-form{grid-template-columns:1fr}.field-wide,.form-actions{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- header injected -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-user" data-user-only hidden>
+        <div class="sidebar-user-avatar" aria-hidden="true"></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" data-user-name>User</div>
+          <span class="badge info small sidebar-role-pill" data-role-label></span>
+        </div>
+      </div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li data-user-only><a href="dashboard.html">Overview</a></li>
+          <li data-user-only><a href="rooms.html">Rooms</a></li>
+          <li data-user-only><a href="labs.html">Laboratories</a></li>
+          <li data-user-only><a href="calendar.html">Calendar</a></li>
+          <li data-can-reserve hidden><a href="reservation.html">New Reservation</a></li>
+          <li data-can-reserve hidden><a href="my-reservations.html">My Reservations</a></li>
+          <li data-report-access hidden><a href="reports.html">Lab Reports</a></li>
+          <li data-admin-only hidden><a href="admin.html">Admin</a></li>
+        </ul>
+        <ul>
+          <li data-user-only><a href="profile.html">Profile</a></li>
+          <li data-user-only><a href="#" data-logout>Logout</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="container with-sidebar">
+      <header class="page-header">
+        <div class="page-title-block">
+          <span class="eyebrow">Laboratories · Maintenance</span>
+          <h1>Laboratory Reports</h1>
+          <p class="lead">Report computer and equipment issues, then track their review and resolution.</p>
+        </div>
+      </header>
+
+      <section class="card mt-lg" id="report-form-section" hidden>
+        <span class="section-label">Lab Tech</span>
+        <h2>Submit an issue report</h2>
+        <form id="report-form" class="report-form mt">
+          <label class="field">Laboratory
+            <select name="roomId" required><option value="">Select a laboratory…</option></select>
+          </label>
+          <label class="field">Computer / Equipment
+            <select name="equipmentId"><option value="">General laboratory issue</option></select>
+          </label>
+          <label class="field">Issue type
+            <input name="issueType" maxlength="100" required placeholder="e.g. Hardware, network, software">
+          </label>
+          <label class="field">Severity
+            <select name="severity" required>
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </label>
+          <label class="field field-wide">Description
+            <textarea name="description" maxlength="10000" required rows="4" placeholder="Describe the issue and any steps already taken."></textarea>
+          </label>
+          <div class="form-actions">
+            <button class="btn primary" type="submit">Submit report</button>
+            <span class="muted" id="report-form-status" role="status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="card mt-lg" aria-labelledby="reports-title">
+        <span class="section-label">History</span>
+        <h2 id="reports-title">Reported issues</h2>
+        <div id="reports-list" class="table-wrap mt" aria-live="polite">
+          <p class="muted">Loading reports…</p>
+        </div>
+      </section>
+
+      <section class="card mt-lg" id="equipment-management" hidden>
+        <span class="section-label">Admin</span>
+        <h2>Manage laboratory equipment</h2>
+        <form id="equipment-form" class="equipment-form mt">
+          <input type="hidden" name="id">
+          <label class="field">Laboratory
+            <select name="roomId" required><option value="">Select a laboratory…</option></select>
+          </label>
+          <label class="field">Equipment code
+            <input name="code" maxlength="50" required>
+          </label>
+          <label class="field">Name
+            <input name="name" maxlength="150" required>
+          </label>
+          <label class="field">Status
+            <select name="status">
+              <option value="operational">Operational</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="retired">Retired</option>
+            </select>
+          </label>
+          <label class="field field-wide">Description
+            <textarea name="description" maxlength="10000" rows="2"></textarea>
+          </label>
+          <div class="form-actions">
+            <button class="btn primary" id="equipment-save" type="submit">Add equipment</button>
+            <button class="btn ghost" id="equipment-cancel" type="button" hidden>Cancel edit</button>
+          </div>
+        </form>
+        <div id="equipment-list" class="table-wrap mt" aria-live="polite">
+          <p class="muted">Loading equipment…</p>
+        </div>
+      </section>
+    </main>
+    <!-- footer injected -->
+  </div>
+  <script src="../js/components.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/reports.js"></script>
+</body>
+</html>
