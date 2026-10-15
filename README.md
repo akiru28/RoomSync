@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div align="center">
   <img src="public/assets/logos/logo_wm.png" alt="RoomSync logo" width="300" />
   <h1>RoomSync</h1>
