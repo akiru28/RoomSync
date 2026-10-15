@@ -252,6 +252,7 @@
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none !important}
 html,body{height:100%}
+<<<<<<< HEAD
 html{background-color:var(--bg);color-scheme:light}
 [data-theme="dark"]{color-scheme:dark}
 /* Theme tokens should update as one page-wide change; individual component
@@ -260,6 +261,9 @@ html.theme-switching,
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after{transition:none !important}
+=======
+html{transition:background-color .3s var(--ease),color .3s var(--ease)}
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
 body{
   margin:0;
   font-family:'Inter','Segoe UI',system-ui,-apple-system,Arial,sans-serif;

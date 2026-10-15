@@ -5,13 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#12355B">
   <title>Profile — RoomSync</title>
+<<<<<<< HEAD
   <script src="../js/theme-init.js"></script>
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   <link rel="icon" type="image/png" href="../assets/logos/logo.png">
   <link rel="stylesheet" href="../css/main.css">
   <style>
     html{scroll-behavior:smooth;scroll-padding-top:68px}
     html,body{overflow-x:hidden}
     body{position:relative}
+<<<<<<< HEAD
     body::before,body::after{content:"";position:fixed;border-radius:50%;filter:blur(80px);opacity:.2;pointer-events:none;z-index:0;animation:profile-blob 18s ease-in-out infinite alternate}
     body::before{width:340px;height:340px;background:var(--hero-blob-1);top:-140px;right:-100px}
     body::after{width:280px;height:280px;background:var(--hero-blob-2);bottom:-120px;left:-90px;animation-direction:alternate-reverse}
@@ -52,12 +56,38 @@
     .hero-entrance.visible{animation:profile-enter .55s var(--ease) both}
     .hero-entrance.d1{animation-delay:.04s}.hero-entrance.d2{animation-delay:.1s}
     @keyframes profile-enter{to{opacity:1;transform:translateY(0)}}
+=======
+    body::before,body::after{
+      content:"";position:fixed;border-radius:50%;filter:blur(80px);
+      opacity:.26;pointer-events:none;z-index:0;
+      animation:blob-move 16s ease-in-out infinite alternate;
+    }
+    body::before{width:360px;height:360px;background:var(--hero-blob-1);top:-140px;right:-100px}
+    body::after{width:300px;height:300px;background:var(--hero-blob-2);bottom:-120px;left:-90px;animation-direction:alternate-reverse;animation-duration:18s}
+    #app{position:relative;z-index:1}
+    #app > main.container{min-height:calc(100vh - 68px)}
+    @keyframes blob-move{to{transform:translate(-24px,16px) scale(1.05)}}
+
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+      html{scroll-behavior:auto}
+      .hero-entrance{opacity:1;transform:none}
+      .blob,body::before,body::after{animation:none !important}
+    }
+
+    .hero-entrance{opacity:0;transform:translateY(16px)}
+    .hero-entrance.visible{animation:hero-up .7s var(--ease) both}
+    .hero-entrance.d1{animation-delay:.05s}.hero-entrance.d2{animation-delay:.12s}
+    .hero-entrance.d3{animation-delay:.2s}.hero-entrance.d4{animation-delay:.28s}
+    @keyframes hero-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   </style>
 </head>
 <body>
   <div id="app">
     <!-- header injected -->
     <aside class="sidebar" id="sidebar">
+<<<<<<< HEAD
       <div class="sidebar-user" data-user-only hidden><div class="sidebar-user-avatar" aria-hidden="true"></div><div class="sidebar-user-info"><div class="sidebar-user-name" data-user-name>User</div><span class="badge info small sidebar-role-pill" data-role-label></span></div></div>
       <nav aria-label="Main Navigation">
         <ul>
@@ -65,10 +95,35 @@
           <li data-can-reserve hidden><a href="reservation.html">New Reservation</a></li><li data-can-reserve hidden><a href="my-reservations.html">My Reservations</a></li><li data-report-access hidden><a href="reports.html">Lab Reports</a></li><li data-admin-only hidden><a href="admin.html">Admin</a></li>
         </ul>
         <ul><li data-user-only><a href="profile.html">Profile</a></li><li data-user-only><a href="#" data-logout>Logout</a></li></ul>
+=======
+      <div class="sidebar-user" data-user-only hidden>
+        <div class="sidebar-user-avatar" aria-hidden="true"></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" data-user-name>User</div>
+          <span class="badge info small sidebar-role-pill" data-role-label></span>
+        </div>
+      </div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li data-user-only><a href="dashboard.html">Overview</a></li>
+          <li data-user-only><a href="rooms.html">Rooms</a></li>
+          <li data-user-only><a href="labs.html">Laboratories</a></li>
+          <li data-user-only><a href="calendar.html">Calendar</a></li>
+          <li data-can-reserve hidden><a href="reservation.html">New Reservation</a></li>
+          <li data-can-reserve hidden><a href="my-reservations.html">My Reservations</a></li>
+          <li data-report-access hidden><a href="reports.html">Lab Reports</a></li>
+          <li data-admin-only hidden><a href="admin.html">Admin</a></li>
+        </ul>
+        <ul>
+          <li data-user-only><a href="profile.html">Profile</a></li>
+          <li data-user-only><a href="#" data-logout>Logout</a></li>
+        </ul>
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
       </nav>
     </aside>
     <main class="container with-sidebar">
       <header class="page-header hero-entrance d1">
+<<<<<<< HEAD
         <div class="page-title-block"><span class="eyebrow">Account · Settings</span><h1>My Profile</h1><p class="lead">View your account details and manage your personal information.</p></div>
       </header>
       <section class="profile-layout mt" aria-label="Profile settings">
@@ -130,6 +185,129 @@
   <script src="../js/profile.js"></script>
   <script>
     (function(){var mq=window.matchMedia('(prefers-reduced-motion: reduce)');if(mq.matches)return;var els=document.querySelectorAll('.hero-entrance');var run=function(){els.forEach(function(el){el.classList.add('visible');});};if('requestAnimationFrame'in window){requestAnimationFrame(function(){requestAnimationFrame(run);});}else{run();}})();
+=======
+        <div class="page-title-block">
+          <span class="eyebrow">Account · Settings</span>
+          <h1>My Profile</h1>
+          <p class="lead">Review and update your personal information, view your account activity, and manage preferences.</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn ghost" href="dashboard.html">← Back</a>
+          <button class="btn danger" id="logout-btn">Sign out</button>
+        </div>
+      </header>
+      <section class="grid-2 mt">
+        <div class="card hero-entrance d2">
+          <span class="section-label">Identity</span>
+          <h2>Personal Information</h2>
+          <form id="profile-form" class="form mt">
+            <div class="field">
+              <label for="pf-name">Full name</label>
+              <div class="input-wrap">
+                <input name="name" id="pf-name" placeholder="Your full name">
+              </div>
+            </div>
+            <div class="field">
+              <label for="pf-email">Email</label>
+              <div class="input-wrap">
+                <input name="email" id="pf-email" readonly>
+              </div>
+            </div>
+            <div class="field">
+              <label for="pf-dept">Department</label>
+              <div class="input-wrap">
+                <input name="department" id="pf-dept" placeholder="e.g. College of Computer Studies">
+              </div>
+            </div>
+            <div class="field">
+              <label>Role</label>
+              <div class="input-wrap">
+                <input name="role" value="Student / Faculty" readonly>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn primary">Save changes</button>
+              <a class="btn ghost" href="dashboard.html">Cancel</a>
+            </div>
+          </form>
+        </div>
+
+        <div>
+          <div class="card hero-entrance d3">
+            <span class="section-label">Usage</span>
+            <h3>Account Activity</h3>
+            <ul class="summary-list" id="pf-stats">
+              <li>My Reservations <strong class="stat-num">—</strong></li>
+              <li>Pending <strong style="color:var(--warning)">—</strong></li>
+              <li>Approved <strong style="color:var(--success)">—</strong></li>
+              <li>Member since <strong style="font-size:.9rem">Today</strong></li>
+            </ul>
+          </div>
+          <div class="card mt hero-entrance d4">
+            <span class="section-label">Defaults</span>
+            <h3>Preferences</h3>
+            <p class="muted" style="font-size:.9rem;margin-top:var(--space-3)">Update defaults for reservation forms — coming soon.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- footer injected -->
+    <!-- modals injected -->
+  </div>
+  <script src="../js/components.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      if(!window.Auth || !window.Auth.requireAuth()) return;
+      await window.Auth.ready();
+      const user = window.Auth.getCurrentUser() || {};
+      document.getElementById('pf-name').value = user.name || '';
+      document.getElementById('pf-email').value = user.email || '';
+      document.getElementById('pf-dept').value = user.department || 'College of Computer Studies';
+      document.querySelector('#profile-form [name="role"]').value = window.Auth.displayRole(user.role);
+
+      const mine = await window.Api.get('/reservations');
+      const stats = document.getElementById('pf-stats');
+      if(stats){
+        const pending = mine.filter(r => r.status === 'pending').length;
+        const approved = mine.filter(r => r.status === 'approved').length;
+        stats.innerHTML = `
+          <li>My Reservations <strong class="stat-num">${mine.length}</strong></li>
+          <li>Pending <strong style="color:var(--warning)">${pending}</strong></li>
+          <li>Approved <strong style="color:var(--success)">${approved}</strong></li>
+          <li>Member since <strong style="font-size:.9rem">${window.formatDateShort(new Date())}</strong></li>`;
+      }
+
+      document.getElementById('logout-btn').addEventListener('click', ()=> window.Auth.logout());
+
+      const form = document.getElementById('profile-form');
+      form.addEventListener('submit', async e=>{
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Saving…';
+        try {
+          const updated = await window.Api.patch('/users/me', {
+            name: document.getElementById('pf-name').value.trim(),
+            department: document.getElementById('pf-dept').value.trim()
+          });
+          window.Auth.setSession(window.Auth.getToken(), updated);
+          window.showToast('success','Profile saved','Your changes have been saved.');
+          btn.disabled = false; btn.textContent = 'Save changes';
+        } catch (err) { window.showToast('error', 'Profile not saved', err.message); btn.disabled = false; btn.textContent = 'Save changes'; }
+      });
+    });
+  </script>
+  <script>
+    (function(){
+      var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+      if(mq.matches){return;}
+      var els=document.querySelectorAll('.hero-entrance');
+      if(!els.length){return;}
+      var run=function(){els.forEach(function(el){el.classList.add('visible');});};
+      if('requestAnimationFrame' in window){requestAnimationFrame(function(){requestAnimationFrame(run);});}else{run();}
+    })();
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   </script>
 </body>
 </html>

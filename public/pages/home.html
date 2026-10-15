@@ -8,12 +8,15 @@
   <title>Home</title>
   <link rel="icon" type="image/png" href="../assets/logos/logo.png">
   <link rel="stylesheet" href="../css/main.css">
+<<<<<<< HEAD
   <script>
     if (new URLSearchParams(location.search).get('intro') === '1') {
       document.documentElement.classList.add('splash-arrival');
       history.replaceState(null, '', location.pathname + location.hash);
     }
   </script>
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   <style>
     /* ================================================================
        RoomSync Landing Page — Scoped Styles
@@ -23,6 +26,7 @@
     /* --- Base overrides for landing --- */
     html { scroll-behavior: smooth; scroll-padding-top: 68px; }
     html, body { overflow-x: hidden; }
+<<<<<<< HEAD
     body { padding-top: 68px; isolation: isolate; }
 
     html.splash-arrival .home-wrap {
@@ -32,6 +36,9 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
+=======
+    body { padding-top: 68px; }
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
 
     body::after {
       content: "";
@@ -582,7 +589,10 @@
       .hero-entrance { opacity: 1; transform: none; }
       .tile { animation: none !important; }
       .blob { animation: none !important; }
+<<<<<<< HEAD
       html.splash-arrival .home-wrap { animation: none !important; }
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     }
 
     /* ----------------------------------------------------------------
@@ -876,6 +886,7 @@
         </div>
       </div>
 
+<<<<<<< HEAD
       <div class="hero-collage hero-entrance d3" role="region" aria-label="Live room inventory overview">
         <div class="tile t1">
           <h4>Active Rooms</h4>
@@ -919,6 +930,46 @@
             <strong id="home-room-count">—</strong>
             <span>Active rooms total</span>
           </div>
+=======
+      <div class="hero-collage hero-entrance d3" aria-hidden="true">
+        <div class="tile t1">
+          <h4>Today's Overview</h4>
+          <div class="row"><span>ITLAB 1</span><span class="badge approved">In Use</span></div>
+          <div class="row"><span>ITLAB 2</span><span class="badge pending">Pending</span></div>
+          <div class="row"><span>NAS LAB</span><span class="badge approved">Booked</span></div>
+        </div>
+        <div class="tile t2">
+          <h4>Next Up</h4>
+          <div class="mini-stat">
+            <strong>9:00</strong>
+            <span>ITLAB 1 - Elective 1</span>
+          </div>
+          <div class="mini-stat">
+            <strong>12:00</strong>
+            <span>AB4-TR004 - MORC</span>
+          </div>
+        </div>
+        <div class="tile t3">
+          <h4>Utilization</h4>
+          <div style="padding:4px 0 8px">
+            <div style="font-size:.8rem;color:var(--muted);margin-bottom:4px">Computer Labs</div>
+            <div class="bar"><span style="width:82%"></span></div>
+          </div>
+          <div style="padding:4px 0 8px">
+            <div style="font-size:.8rem;color:var(--muted);margin-bottom:4px">Lecture Rooms</div>
+            <div class="bar"><span style="width:56%"></span></div>
+          </div>
+          <div class="mini-stat">
+            <strong>87%</strong>
+            <span>Average weekly occupancy</span>
+          </div>
+        </div>
+        <div class="tile t4">
+          <h4>Approvals</h4>
+          <div class="row"><span>Pending</span><strong style="color:var(--warning)">2</strong></div>
+          <div class="row"><span>This week</span><strong style="color:var(--success)">14</strong></div>
+          <div class="row"><span>Rejected</span><strong style="color:var(--danger)">1</strong></div>
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
         </div>
       </div>
     </section>
@@ -969,7 +1020,10 @@
     <!-- modals injected -->
   </div>
 
+<<<<<<< HEAD
   <script src="../js/home-data.js"></script>
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   <script src="../js/components.js"></script>
   <script src="../js/main.js"></script>
   <script>
@@ -1064,4 +1118,8 @@
     })();
   </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2

@@ -37,6 +37,12 @@ async function updateMe(req, res, next) {
     if (typeof req.body.department === 'string') {
       patch.department = req.body.department.trim();
     }
+<<<<<<< HEAD
+=======
+    if (typeof req.body.password === 'string' && req.body.password.length >= 4) {
+      patch.password = await bcrypt.hash(req.body.password, 12);
+    }
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     const updated = await userRepo.update(req.user.id, patch);
     return success(res, sanitize(updated), 'Profile updated.');
   } catch (err) {
@@ -45,6 +51,7 @@ async function updateMe(req, res, next) {
 }
 
 /**
+<<<<<<< HEAD
  * POST /api/users/me/password
  * Verify the current password before changing the signed-in user's password.
  */
@@ -73,6 +80,8 @@ async function changeMyPassword(req, res, next) {
 }
 
 /**
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
  * GET /api/users/:id
  * @param {import('express').Request} req
  * @param {import('express').Response} res
@@ -197,4 +206,8 @@ async function updateAdminUser(req, res, next) {
   }
 }
 
+<<<<<<< HEAD
 module.exports = { getMe, updateMe, changeMyPassword, getById, listUsers, createAdminUser, updateAdminUser };
+=======
+module.exports = { getMe, updateMe, getById, listUsers, createAdminUser, updateAdminUser };
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2

@@ -3,6 +3,7 @@
   'use strict';
   const TOKEN = 'rr_token', USER = 'rr_user';
   const THEME = 'rr_theme';
+<<<<<<< HEAD
   const THEME_PAGES = new Set([
     'admin.html', 'calendar.html', 'dashboard.html', 'labs.html',
     'my-reservations.html', 'profile.html', 'reports.html',
@@ -15,6 +16,25 @@
   let savedTheme = null;
   try { if (themeEnabled) savedTheme = localStorage.getItem(THEME); } catch (_) {}
   if (savedTheme === 'light' || savedTheme === 'dark') {
+=======
+  const THEME_ENABLED_PAGES = new Set([
+    'admin.html',
+    'calendar.html',
+    'dashboard.html',
+    'labs.html',
+    'my-reservations.html',
+    'profile.html',
+    'reports.html',
+    'reservation.html',
+    'rooms.html',
+  ]);
+  const CAN_RESERVE = ['instructor'];
+  const CAN_APPROVE = ['admin'];
+  const currentPage = location.pathname.split('/').pop().toLowerCase();
+  const themeEnabled = THEME_ENABLED_PAGES.has(currentPage);
+  const savedTheme = localStorage.getItem(THEME);
+  if (themeEnabled && (savedTheme === 'light' || savedTheme === 'dark')) {
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     document.documentElement.dataset.theme = savedTheme;
   }
   let currentUser = null, readyPromise = Promise.resolve(null);
@@ -65,7 +85,11 @@
     async requireRole(...roles) { if (!(await Auth.requireAuth())) return false; if (roles.includes(Auth.getCurrentRole())) return true; window.showToast('error', 'Access denied', 'You do not have permission to view this page.'); setTimeout(() => location.href = 'dashboard.html', 300); return false; },
     async requireCanReserve() { return Auth.requireRole(...CAN_RESERVE); },
     async requireCanApprove() { return Auth.requireRole(...CAN_APPROVE); },
+<<<<<<< HEAD
     async logout() { try { if (Auth.getToken()) await window.Api.post('/auth/logout', {}); } catch (_) {} Auth.clearSession(false); location.href = 'home.html'; },
+=======
+    async logout() { try { if (Auth.getToken()) await window.Api.post('/auth/logout', {}); } catch (_) {} Auth.clearSession(false); location.href = 'index.html'; },
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     renderNavigation() {
       const user = currentUser;
       const admin = Auth.isAdmin();
@@ -123,6 +147,7 @@
       if (!event.target.closest('[data-theme-toggle]')) return;
       if (!themeEnabled) return;
       const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+<<<<<<< HEAD
       const root = document.documentElement;
       // Suppress each component's independent CSS transition while the theme
       // tokens change, so the whole page switches together without stagger.
@@ -137,6 +162,19 @@
       requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-switching')));
     });
     const year = qs('#footer-year'); if (year) year.textContent = new Date().getFullYear();
+=======
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem(THEME, theme);
+      syncThemeToggle();
+    });
+    const year = qs('#footer-year'); if (year) year.textContent = new Date().getFullYear();
+    qs('#refresh-btn')?.addEventListener('click', () => {
+      const refreshEvent = new CustomEvent('roomsync:refresh', { cancelable: true });
+      window.dispatchEvent(refreshEvent);
+      if (!refreshEvent.defaultPrevented) location.reload();
+    });
+
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     const header = qs('.site-header');
     const applyScroll = () => { if (header) header.classList.toggle('scrolled', window.scrollY > 8); };
     applyScroll(); window.addEventListener('scroll', applyScroll, { passive: true });
