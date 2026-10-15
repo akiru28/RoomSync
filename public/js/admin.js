@@ -8,7 +8,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const roomForm = document.getElementById('room-form');
   const userForm = document.getElementById('user-form');
   const reservationForm = document.getElementById('reservation-form');
+<<<<<<< HEAD
+=======
   const refreshButton = document.getElementById('refresh-btn');
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   const overviewSummary = document.getElementById('admin-overview-summary');
   if (!reservationsBody || !roomsBody || !usersBody || !roomForm || !userForm || !reservationForm) return;
   let currentUsers = [];
@@ -91,7 +94,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function load() {
+<<<<<<< HEAD
+=======
     if (refreshButton) refreshButton.disabled = true;
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     reservationsBody.innerHTML = '<tr><td colspan="4">Loading requests…</td></tr>';
     roomsBody.innerHTML = '<tr><td colspan="6">Loading rooms…</td></tr>';
     usersBody.innerHTML = '<tr><td colspan="5">Loading users…</td></tr>';
@@ -119,7 +125,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       usersBody.innerHTML = `<tr><td colspan="5">Unable to load user accounts: ${escapeHtml(error.message)}</td></tr>`;
       if (overviewSummary) overviewSummary.textContent = `Unable to load overview data: ${error.message}`;
     } finally {
+<<<<<<< HEAD
+=======
       if (refreshButton) refreshButton.disabled = false;
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     }
   }
 
@@ -381,9 +390,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+<<<<<<< HEAD
+=======
   window.addEventListener('roomsync:refresh', (event) => {
     event.preventDefault();
     load();
   });
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   await load();
 });

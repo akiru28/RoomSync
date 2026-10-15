@@ -15,6 +15,14 @@ router.get('/me', authenticate, userController.getMe);
 router.patch('/me', authenticate, userController.updateMe);
 
 /**
+<<<<<<< HEAD
+ * POST /api/users/me/password
+ */
+router.post('/me/password', authenticate, userController.changeMyPassword);
+
+/**
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
  * GET /api/users/:id (self or admin)
  */
 router.get('/:id', authenticate, userController.getById);

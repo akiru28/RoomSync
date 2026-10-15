@@ -5,12 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#12355B">
   <title>Profile — RoomSync</title>
+<<<<<<< HEAD
+  <script src="../js/theme-init.js"></script>
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   <link rel="icon" type="image/png" href="../assets/logos/logo.png">
   <link rel="stylesheet" href="../css/main.css">
   <style>
     html{scroll-behavior:smooth;scroll-padding-top:68px}
     html,body{overflow-x:hidden}
     body{position:relative}
+<<<<<<< HEAD
+    body::before,body::after{content:"";position:fixed;border-radius:50%;filter:blur(80px);opacity:.2;pointer-events:none;z-index:0;animation:profile-blob 18s ease-in-out infinite alternate}
+    body::before{width:340px;height:340px;background:var(--hero-blob-1);top:-140px;right:-100px}
+    body::after{width:280px;height:280px;background:var(--hero-blob-2);bottom:-120px;left:-90px;animation-direction:alternate-reverse}
+    #app{position:relative;z-index:1}
+    #app>main.container{min-height:calc(100vh - 68px)}
+    @keyframes profile-blob{to{transform:translate(-20px,14px) scale(1.04)}}
+    .profile-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.8fr);gap:var(--space-5);align-items:start}
+    .profile-card{padding:clamp(20px,3vw,30px)}
+    .profile-identity{display:flex;align-items:center;gap:18px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+    .profile-avatar{display:grid;place-items:center;flex:0 0 68px;width:68px;height:68px;border-radius:22px;background:linear-gradient(140deg,var(--primary-soft),var(--accent-soft));color:var(--primary);font-size:1.45rem;font-weight:800;letter-spacing:.02em}
+    .profile-identity h2{margin:0 0 5px;font-size:1.3rem;overflow-wrap:anywhere}
+    .profile-identity p{margin:0;color:var(--muted);font-size:var(--fs-sm);overflow-wrap:anywhere}
+    .profile-actions{display:flex;flex-wrap:wrap;gap:10px;margin-left:auto}
+    .profile-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;margin:24px 0 0}
+    .profile-field{min-width:0}
+    .profile-field dt{margin-bottom:6px;color:var(--muted);font-size:var(--fs-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .profile-field dd{margin:0;color:var(--text);font-weight:600;overflow-wrap:anywhere}
+    .profile-help{margin:22px 0 0;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:var(--fs-sm);line-height:1.55}
+    .security-card p{color:var(--muted);font-size:var(--fs-sm);line-height:1.6}
+    .security-card .btn{width:100%;justify-content:center;margin-top:8px}
+    .security-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:18px;border-radius:13px;background:var(--primary-soft);color:var(--primary);font-size:1.2rem}
+    .profile-dialog{width:min(100% - 32px,520px);max-height:min(88vh,760px);padding:0;overflow:auto;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-xl)}
+    .profile-dialog::backdrop{background:rgba(8,18,34,.58);backdrop-filter:blur(3px)}
+    .dialog-inner{padding:clamp(22px,4vw,32px)}
+    .dialog-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+    .dialog-header h2{margin:0 0 6px;font-size:1.35rem}
+    .dialog-header p{margin:0;color:var(--muted);font-size:var(--fs-sm);line-height:1.5}
+    .dialog-close{flex:0 0 auto;width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-2);font-size:1.25rem;cursor:pointer}
+    .dialog-fields{display:grid;gap:16px}
+    .dialog-fields .field{margin:0}
+    .dialog-fields input{width:100%;min-height:46px}
+    .dialog-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .dialog-status{min-height:1.2em;margin:12px 0 0;color:var(--muted);font-size:var(--fs-sm)}
+    @media(max-width:860px){.profile-layout{grid-template-columns:1fr}}
+    @media(max-width:560px){.profile-identity{align-items:flex-start;flex-wrap:wrap}.profile-actions{width:100%;margin-left:0}.profile-actions .btn{flex:1}.profile-fields{grid-template-columns:1fr;gap:16px}.profile-dialog{width:min(100% - 20px,520px);border-radius:18px}.dialog-actions>*{flex:1}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}html{scroll-behavior:auto}.hero-entrance{opacity:1;transform:none}body::before,body::after{animation:none!important}}
+    .hero-entrance{opacity:0;transform:translateY(12px)}
+    .hero-entrance.visible{animation:profile-enter .55s var(--ease) both}
+    .hero-entrance.d1{animation-delay:.04s}.hero-entrance.d2{animation-delay:.1s}
+    @keyframes profile-enter{to{opacity:1;transform:translateY(0)}}
+=======
     body::before,body::after{
       content:"";position:fixed;border-radius:50%;filter:blur(80px);
       opacity:.26;pointer-events:none;z-index:0;
@@ -34,12 +80,22 @@
     .hero-entrance.d1{animation-delay:.05s}.hero-entrance.d2{animation-delay:.12s}
     .hero-entrance.d3{animation-delay:.2s}.hero-entrance.d4{animation-delay:.28s}
     @keyframes hero-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   </style>
 </head>
 <body>
   <div id="app">
     <!-- header injected -->
     <aside class="sidebar" id="sidebar">
+<<<<<<< HEAD
+      <div class="sidebar-user" data-user-only hidden><div class="sidebar-user-avatar" aria-hidden="true"></div><div class="sidebar-user-info"><div class="sidebar-user-name" data-user-name>User</div><span class="badge info small sidebar-role-pill" data-role-label></span></div></div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li data-user-only><a href="dashboard.html">Overview</a></li><li data-user-only><a href="rooms.html">Rooms</a></li><li data-user-only><a href="labs.html">Laboratories</a></li><li data-user-only><a href="calendar.html">Calendar</a></li>
+          <li data-can-reserve hidden><a href="reservation.html">New Reservation</a></li><li data-can-reserve hidden><a href="my-reservations.html">My Reservations</a></li><li data-report-access hidden><a href="reports.html">Lab Reports</a></li><li data-admin-only hidden><a href="admin.html">Admin</a></li>
+        </ul>
+        <ul><li data-user-only><a href="profile.html">Profile</a></li><li data-user-only><a href="#" data-logout>Logout</a></li></ul>
+=======
       <div class="sidebar-user" data-user-only hidden>
         <div class="sidebar-user-avatar" aria-hidden="true"></div>
         <div class="sidebar-user-info">
@@ -62,10 +118,74 @@
           <li data-user-only><a href="profile.html">Profile</a></li>
           <li data-user-only><a href="#" data-logout>Logout</a></li>
         </ul>
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
       </nav>
     </aside>
     <main class="container with-sidebar">
       <header class="page-header hero-entrance d1">
+<<<<<<< HEAD
+        <div class="page-title-block"><span class="eyebrow">Account · Settings</span><h1>My Profile</h1><p class="lead">View your account details and manage your personal information.</p></div>
+      </header>
+      <section class="profile-layout mt" aria-label="Profile settings">
+        <article class="card profile-card hero-entrance d1">
+          <div class="profile-identity">
+            <div class="profile-avatar" id="pf-avatar" aria-hidden="true">RS</div>
+            <div><span class="section-label">Personal information</span><h2 id="pf-display-name">Loading profile…</h2><p id="pf-display-email"> </p></div>
+            <div class="profile-actions"><button class="btn primary" id="edit-profile-open" type="button">Edit Profile</button></div>
+          </div>
+          <dl class="profile-fields">
+            <div class="profile-field"><dt>Full name</dt><dd id="pf-view-name">—</dd></div>
+            <div class="profile-field"><dt>Email address</dt><dd id="pf-view-email">—</dd></div>
+            <div class="profile-field"><dt>Department</dt><dd id="pf-view-department">—</dd></div>
+            <div class="profile-field"><dt>Account role</dt><dd><span class="badge info small" id="pf-view-role">—</span></dd></div>
+          </dl>
+          <p class="profile-help">Your email address and account role are managed by RoomSync administrators and can’t be changed here.</p>
+        </article>
+        <aside>
+          <article class="card profile-card security-card hero-entrance d2">
+            <div class="security-icon" aria-hidden="true">⌑</div><span class="section-label">Security</span><h2>Keep your account secure</h2>
+            <p>Change your password using your current password to verify it’s you.</p>
+            <button class="btn ghost" id="change-password-open" type="button">Change Password</button>
+          </article>
+          <article class="card profile-card mt hero-entrance d2" id="profile-activity"><span class="section-label">Account activity</span><h2>Reservation summary</h2><ul class="summary-list" id="pf-stats"><li>Reservations <strong>—</strong></li><li>Pending <strong>—</strong></li><li>Approved <strong>—</strong></li></ul></article>
+        </aside>
+      </section>
+    </main>
+    <!-- footer injected -->
+  </div>
+
+  <dialog class="profile-dialog" id="edit-profile-dialog" aria-labelledby="edit-profile-title">
+    <div class="dialog-inner"><div class="dialog-header"><div><h2 id="edit-profile-title">Edit Profile</h2><p>Update the personal details associated with your account.</p></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <form id="profile-form"><div class="dialog-fields">
+        <label class="field" for="pf-name">Full name<input id="pf-name" name="name" autocomplete="name" minlength="2" maxlength="150" required></label>
+        <label class="field" for="pf-dept">Department<input id="pf-dept" name="department" autocomplete="organization" maxlength="150"></label>
+        <label class="field" for="pf-email-edit">Email address<input id="pf-email-edit" type="email" readonly aria-readonly="true"></label>
+        <label class="field" for="pf-role-edit">Account role<input id="pf-role-edit" readonly aria-readonly="true"></label>
+      </div><p class="dialog-status" id="profile-status" role="status" aria-live="polite"></p>
+        <div class="dialog-actions"><button class="btn ghost" type="button" data-close-dialog>Cancel</button><button class="btn primary" type="submit">Save Changes</button></div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="profile-dialog" id="change-password-dialog" aria-labelledby="change-password-title">
+    <div class="dialog-inner"><div class="dialog-header"><div><h2 id="change-password-title">Change Password</h2><p>Enter your current password and choose a new one.</p></div><button class="dialog-close" type="button" data-close-dialog aria-label="Close">×</button></div>
+      <form id="password-form"><div class="dialog-fields">
+        <label class="field" for="current-password">Current password<input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required></label>
+        <label class="field" for="new-password">New password<input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" required><small class="muted">Use at least 8 characters.</small></label>
+        <label class="field" for="confirm-password">Confirm new password<input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+      </div><p class="dialog-status" id="password-status" role="status" aria-live="polite"></p>
+        <div class="dialog-actions"><button class="btn ghost" type="button" data-close-dialog>Cancel</button><button class="btn primary" type="submit">Save Changes</button></div>
+      </form>
+    </div>
+  </dialog>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/profile.js"></script>
+  <script>
+    (function(){var mq=window.matchMedia('(prefers-reduced-motion: reduce)');if(mq.matches)return;var els=document.querySelectorAll('.hero-entrance');var run=function(){els.forEach(function(el){el.classList.add('visible');});};if('requestAnimationFrame'in window){requestAnimationFrame(function(){requestAnimationFrame(run);});}else{run();}})();
+=======
         <div class="page-title-block">
           <span class="eyebrow">Account · Settings</span>
           <h1>My Profile</h1>
@@ -187,6 +307,7 @@
       var run=function(){els.forEach(function(el){el.classList.add('visible');});};
       if('requestAnimationFrame' in window){requestAnimationFrame(function(){requestAnimationFrame(run);});}else{run();}
     })();
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   </script>
 </body>
 </html>

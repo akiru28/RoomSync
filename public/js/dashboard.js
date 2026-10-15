@@ -6,7 +6,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const upcoming = document.getElementById('upcoming-list');
   const activities = document.getElementById('activities-tbody');
   const summary = document.getElementById('summary-list');
+<<<<<<< HEAD
+=======
   const refreshButton = document.getElementById('refresh-btn');
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   const statToday = document.getElementById('stat-today');
   const statWeek = document.getElementById('stat-week');
   const statPending = document.getElementById('stat-pending');
@@ -71,7 +74,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function load() {
+<<<<<<< HEAD
+=======
     if (refreshButton) refreshButton.disabled = true;
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     setStat(statToday, null);
     setStat(statWeek, null);
     setStat(statPending, null);
@@ -203,6 +209,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
+<<<<<<< HEAD
+  }
+=======
     if (refreshButton) refreshButton.disabled = false;
   }
 
@@ -210,5 +219,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     event.preventDefault();
     load();
   });
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   await load();
 });

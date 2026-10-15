@@ -8,6 +8,15 @@
   <title>Home</title>
   <link rel="icon" type="image/png" href="../assets/logos/logo.png">
   <link rel="stylesheet" href="../css/main.css">
+<<<<<<< HEAD
+  <script>
+    if (new URLSearchParams(location.search).get('intro') === '1') {
+      document.documentElement.classList.add('splash-arrival');
+      history.replaceState(null, '', location.pathname + location.hash);
+    }
+  </script>
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   <style>
     /* ================================================================
        RoomSync Landing Page — Scoped Styles
@@ -17,7 +26,19 @@
     /* --- Base overrides for landing --- */
     html { scroll-behavior: smooth; scroll-padding-top: 68px; }
     html, body { overflow-x: hidden; }
+<<<<<<< HEAD
+    body { padding-top: 68px; isolation: isolate; }
+
+    html.splash-arrival .home-wrap {
+      animation: home-arrival .52s cubic-bezier(.2,.75,.25,1) both;
+    }
+    @keyframes home-arrival {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+=======
     body { padding-top: 68px; }
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
 
     body::after {
       content: "";
@@ -568,6 +589,10 @@
       .hero-entrance { opacity: 1; transform: none; }
       .tile { animation: none !important; }
       .blob { animation: none !important; }
+<<<<<<< HEAD
+      html.splash-arrival .home-wrap { animation: none !important; }
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     }
 
     /* ----------------------------------------------------------------
@@ -861,6 +886,51 @@
         </div>
       </div>
 
+<<<<<<< HEAD
+      <div class="hero-collage hero-entrance d3" role="region" aria-label="Live room inventory overview">
+        <div class="tile t1">
+          <h4>Active Rooms</h4>
+          <div id="home-room-list" aria-live="polite">
+            <div class="row"><span>Loading room inventory…</span></div>
+          </div>
+        </div>
+        <div class="tile t2">
+          <h4>Room Types</h4>
+          <div class="mini-stat">
+            <strong id="home-lab-count">—</strong>
+            <span>Laboratories</span>
+          </div>
+          <div class="mini-stat">
+            <strong id="home-lecture-count">—</strong>
+            <span>Lecture rooms</span>
+          </div>
+        </div>
+        <div class="tile t3">
+          <h4>Room Capacity</h4>
+          <div style="padding:4px 0 8px">
+            <div style="font-size:.8rem;color:var(--muted);margin-bottom:4px">Total seats in active rooms</div>
+            <div class="mini-stat"><strong id="home-total-capacity">—</strong><span>Seats</span></div>
+          </div>
+          <div style="padding:4px 0 8px">
+            <div style="font-size:.8rem;color:var(--muted);margin-bottom:4px">Average room capacity</div>
+            <div class="mini-stat"><strong id="home-average-capacity">—</strong><span>Seats per room</span></div>
+          </div>
+        </div>
+        <div class="tile t4">
+          <h4>Inventory Mix</h4>
+          <div style="padding:4px 0 8px">
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:4px"><span>Laboratories</span><strong id="home-lab-share">—</strong></div>
+            <div class="bar"><span id="home-lab-bar" style="width:0%"></span></div>
+          </div>
+          <div style="padding:4px 0 8px">
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:4px"><span>Lecture rooms</span><strong id="home-lecture-share">—</strong></div>
+            <div class="bar"><span id="home-lecture-bar" style="width:0%"></span></div>
+          </div>
+          <div class="mini-stat">
+            <strong id="home-room-count">—</strong>
+            <span>Active rooms total</span>
+          </div>
+=======
       <div class="hero-collage hero-entrance d3" aria-hidden="true">
         <div class="tile t1">
           <h4>Today's Overview</h4>
@@ -899,6 +969,7 @@
           <div class="row"><span>Pending</span><strong style="color:var(--warning)">2</strong></div>
           <div class="row"><span>This week</span><strong style="color:var(--success)">14</strong></div>
           <div class="row"><span>Rejected</span><strong style="color:var(--danger)">1</strong></div>
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
         </div>
       </div>
     </section>
@@ -949,6 +1020,10 @@
     <!-- modals injected -->
   </div>
 
+<<<<<<< HEAD
+  <script src="../js/home-data.js"></script>
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
   <script src="../js/components.js"></script>
   <script src="../js/main.js"></script>
   <script>
@@ -1043,4 +1118,8 @@
     })();
   </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2

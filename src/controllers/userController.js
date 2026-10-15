@@ -37,9 +37,12 @@ async function updateMe(req, res, next) {
     if (typeof req.body.department === 'string') {
       patch.department = req.body.department.trim();
     }
+<<<<<<< HEAD
+=======
     if (typeof req.body.password === 'string' && req.body.password.length >= 4) {
       patch.password = await bcrypt.hash(req.body.password, 12);
     }
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
     const updated = await userRepo.update(req.user.id, patch);
     return success(res, sanitize(updated), 'Profile updated.');
   } catch (err) {
@@ -48,6 +51,37 @@ async function updateMe(req, res, next) {
 }
 
 /**
+<<<<<<< HEAD
+ * POST /api/users/me/password
+ * Verify the current password before changing the signed-in user's password.
+ */
+async function changeMyPassword(req, res, next) {
+  try {
+    if (!req.user) return error(res, 'Authentication required.', 401);
+    const currentPassword = typeof req.body.currentPassword === 'string' ? req.body.currentPassword : '';
+    const newPassword = typeof req.body.newPassword === 'string' ? req.body.newPassword : '';
+    if (!currentPassword) return error(res, 'Current password is required.', 400);
+    if (newPassword.length < 8 || newPassword.length > 128) {
+      return error(res, 'New password must be between 8 and 128 characters.', 400);
+    }
+
+    const passwordIsHashed = /^\$2[aby]\$\d\d\$/.test(req.user.password || '');
+    const currentMatches = passwordIsHashed
+      ? await bcrypt.compare(currentPassword, req.user.password)
+      : currentPassword === req.user.password;
+    if (!currentMatches) return error(res, 'Current password is incorrect.', 400);
+
+    const updated = await userRepo.update(req.user.id, { password: await bcrypt.hash(newPassword, 12) });
+    if (!updated) return error(res, 'User not found.', 404);
+    return success(res, { changed: true }, 'Password changed.');
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/**
+=======
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
  * GET /api/users/:id
  * @param {import('express').Request} req
  * @param {import('express').Response} res
@@ -172,4 +206,8 @@ async function updateAdminUser(req, res, next) {
   }
 }
 
+<<<<<<< HEAD
+module.exports = { getMe, updateMe, changeMyPassword, getById, listUsers, createAdminUser, updateAdminUser };
+=======
 module.exports = { getMe, updateMe, getById, listUsers, createAdminUser, updateAdminUser };
+>>>>>>> d727210a0516bfa64868a75374be255d532264a2
